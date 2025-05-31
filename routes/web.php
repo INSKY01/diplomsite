@@ -38,10 +38,19 @@ Route::get('/admin', function () {
     return view('admin');
 });
 
-// Добавляем маршруты для аутентификации в админ-панель
-Route::post('/admin/login', [App\Http\Controllers\AdminController::class, 'login'])->name('admin.login');
-Route::get('/admin/check-auth', [App\Http\Controllers\AdminController::class, 'checkAuth'])->name('admin.check-auth');
-Route::post('/admin/logout', [App\Http\Controllers\AdminController::class, 'logout'])->name('admin.logout');
+// Маршруты для аутентификации в админ-панель
+Route::post('/admin/login', [AdminController::class, 'login'])->name('admin.login');
+Route::get('/admin/check-auth', [AdminController::class, 'checkAuth'])->name('admin.check-auth');
+Route::post('/admin/logout', [AdminController::class, 'logout'])->name('admin.logout');
+
+// Новые API маршруты для админ-панели
+Route::prefix('admin/api')->group(function () {
+    Route::get('/data', [AdminController::class, 'getAllData'])->name('admin.data');
+    Route::get('/data/{table}', [AdminController::class, 'getTableData'])->name('admin.table-data');
+    Route::post('/data/{table}', [AdminController::class, 'store'])->name('admin.store');
+    Route::put('/data/{table}/{id}', [AdminController::class, 'update'])->name('admin.update');
+    Route::delete('/data/{table}/{id}', [AdminController::class, 'destroy'])->name('admin.destroy');
+});
 
 Route::post('/send-feedback', [FeedbackController::class, 'sendFeedback'])->name('send.feedback');
 
@@ -59,13 +68,12 @@ Route::prefix('api/calculator')->group(function () {
     Route::get('/additions', [CalculatorDataController::class, 'getAdditions'])->name('calculator.additions');
 });
 
+// Старые роуты для совместимости
 Route::prefix('admin')->group(function () {
-    Route::get('/types', [AdminController::class, 'index'])->name('admin.types.index');
-    Route::get('/types/{id}/edit', [AdminController::class, 'edit'])->name('admin.types.edit');
-    Route::post('/types/{id}', [AdminController::class, 'update'])->name('admin.types.update');
+    Route::get('/types', [AdminController::class, 'getAllData'])->name('admin.types.index');
 });
 
-// Ресурсные маршруты для категорий (без middleware web, который уже применяется по умолчанию)
+// Ресурсные маршруты для категорий
 Route::resource('floors', FloorController::class);
 Route::resource('roofs', RoofController::class);
 Route::resource('materials', MaterialController::class);

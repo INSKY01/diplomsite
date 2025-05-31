@@ -4,724 +4,441 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <meta name="csrf-token" content="{{ csrf_token() }}">
-    <title>Админ-панель</title>
+    <title>Админ-панель - Управление сайтом</title>
     <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css" rel="stylesheet">
-    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/5.15.4/css/all.min.css">
+    <link href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css" rel="stylesheet">
     <style>
+        :root {
+            --primary-color: #4CAF50;
+            --secondary-color: #2E7D32;
+            --danger-color: #f44336;
+            --warning-color: #ff9800;
+            --info-color: #2196F3;
+            --success-color: #4CAF50;
+            --dark-color: #212529;
+            --light-color: #f8f9fa;
+        }
+
         body {
-            background-color: #f0f2f5;
-            color: #333;
-        }
-        
-        .admin-layout {
-            display: flex;
-            min-height: 100vh;
-            display: none;
-        }
-        
-        .sidebar {
-            width: 250px;
-            background-color: #ffffff;
-            padding: 20px;
-            display: flex;
-            flex-direction: column;
-            box-shadow: 2px 0 5px rgba(0, 0, 0, 0.1);
-        }
-        
-        .logo-container {
-            margin-bottom: 30px;
-            text-align: center;
-            padding: 20px 0;
-        }
-        
-        .logo-container img {
-            max-width: 200px;
-            height: auto;
-        }
-        
-        .nav-buttons {
-            flex-grow: 1;
-        }
-        
-        .nav-button {
-            width: 100%;
-            padding: 15px 20px;
-            margin-bottom: 15px;
-            background: #f8f9fa;
-            border: none;
-            color: #333;
-            text-align: left;
-            border-radius: 8px;
-            transition: all 0.3s;
-            display: flex;
-            align-items: center;
-            font-size: 16px;
-            font-weight: 500;
-        }
-        
-        .nav-button i {
-            margin-right: 15px;
-            width: 20px;
-            font-size: 18px;
-        }
-        
-        .nav-button:hover {
-            background: #e9ecef;
-            transform: translateX(5px);
-        }
-        
-        .nav-button.active {
-            background: #4CAF50;
-            color: white;
-        }
-        
-        .main-content {
-            flex-grow: 1;
-            padding: 30px;
-            background-color: #f0f2f5;
-        }
-        
-        .section-header {
-            display: flex;
-            justify-content: space-between;
-            align-items: center;
-            margin-bottom: 20px;
-            padding-bottom: 15px;
-            border-bottom: 1px solid #e0e0e0;
-        }
-        
-        .section-header h2 {
             margin: 0;
-            font-weight: 600;
-            color: #2c3e50;
+            font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', 'Roboto', sans-serif;
+            background-color: #f5f5f5;
         }
-        
-        .grid {
-            display: grid;
-            grid-template-columns: repeat(auto-fill, minmax(320px, 1fr));
-            gap: 25px;
+
+        /* Экран входа */
+        .login-screen {
+            min-height: 100vh;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            background: linear-gradient(135deg, var(--primary-color), var(--secondary-color));
         }
-        
-        .card {
-            background: #ffffff;
-            border: none;
+
+        .login-card {
+            background: white;
             border-radius: 12px;
-            margin-bottom: 20px;
-            height: 100%;
-            display: flex;
-            flex-direction: column;
-            box-shadow: 0 4px 10px rgba(0, 0, 0, 0.08);
-            transition: transform 0.3s, box-shadow 0.3s;
-            overflow: hidden;
-            position: relative;
-        }
-        
-        .card:hover {
-            transform: translateY(-5px);
-            box-shadow: 0 12px 24px rgba(0, 0, 0, 0.15);
-        }
-        
-        .card-image {
+            padding: 2rem;
+            box-shadow: 0 10px 30px rgba(0,0,0,0.1);
             width: 100%;
-            height: 220px;
-            object-fit: cover;
-            object-position: center;
-            border-bottom: 1px solid rgba(0, 0, 0, 0.05);
-            transition: opacity 0.3s;
+            max-width: 400px;
         }
-        
-        .card:hover .card-image {
-            opacity: 0.95;
-        }
-        
-        .no-image {
-            width: 100%;
-            height: 220px;
-            display: flex;
-            align-items: center;
-            justify-content: center;
-            background-color: #f0f0f0;
-            color: #a0a0a0;
-            font-style: italic;
-            font-size: 16px;
-            border-bottom: 1px solid rgba(0, 0, 0, 0.05);
-        }
-        
-        .card-content {
-            padding: 20px;
-            flex-grow: 1;
-            display: flex;
-            flex-direction: column;
-        }
-        
-        .card-content h3 {
-            margin-top: 0;
-            margin-bottom: 12px;
-            color: #2c3e50;
-            font-size: 20px;
-            font-weight: 600;
-            line-height: 1.3;
-            padding-bottom: 8px;
-            border-bottom: 1px solid rgba(0, 0, 0, 0.05);
-        }
-        
-        .price-tag {
-            background-color: #4CAF50;
-            color: white;
-            padding: 6px 12px;
-            border-radius: 6px;
-            display: inline-block;
-            margin-bottom: 15px;
-            font-weight: 600;
-            font-size: 16px;
-            box-shadow: 0 2px 5px rgba(0, 0, 0, 0.1);
-        }
-        
-        .description {
-            color: #7f8c8d;
-            margin-bottom: 15px;
-            line-height: 1.5;
-            font-size: 15px;
-            flex-grow: 1;
-            overflow-wrap: break-word;
-        }
-        
-        .property-value {
-            margin-bottom: 12px;
-            display: flex;
-            justify-content: space-between;
-            align-items: center;
-            font-size: 15px;
-            color: #555;
-        }
-        
-        .property-value span {
-            font-weight: 600;
-            color: #2c3e50;
-        }
-        
-        .card-content .details {
-            margin-top: 15px;
-            padding: 15px;
-            border-radius: 8px;
-            background-color: #f9f9f9;
-            margin-bottom: 15px;
-        }
-        
-        .card-content .details p {
-            margin-bottom: 8px;
-            font-size: 14px;
-            display: flex;
-            justify-content: space-between;
-            color: #555;
-        }
-        
-        .card-content .details p span:first-child {
-            font-weight: 500;
-            color: #2c3e50;
-        }
-        
-        .card-actions {
-            display: flex;
-            justify-content: flex-end;
-            gap: 10px;
-            margin-top: auto;
-            padding-top: 15px;
-            border-top: 1px solid rgba(0, 0, 0, 0.05);
-        }
-        
-        .btn-edit, .btn-delete {
-            border: none;
-            padding: 8px 15px;
-            border-radius: 6px;
-            display: flex;
-            align-items: center;
-            justify-content: center;
-            transition: all 0.2s;
-            font-size: 14px;
-            font-weight: 500;
-            cursor: pointer;
-        }
-        
-        .btn-edit {
-            background-color: #3498db;
-            color: white;
-        }
-        
-        .btn-edit:hover {
-            background-color: #2980b9;
-        }
-        
-        .btn-delete {
-            background-color: #e74c3c;
-            color: white;
-        }
-        
-        .btn-delete:hover {
-            background-color: #c0392b;
-        }
-        
-        .add-card {
-            border: 2px dashed #ccc;
-            background: rgba(255, 255, 255, 0.7);
-            display: flex;
-            justify-content: center;
-            align-items: center;
-            cursor: pointer;
-            transition: all 0.3s;
-            min-height: 300px;
-        }
-        
-        .add-card:hover {
-            border-color: #4CAF50;
-            background: rgba(255, 255, 255, 0.9);
-        }
-        
-        .add-content {
+
+        .login-card h1 {
             text-align: center;
-            padding: 30px;
-            color: #666;
-            transition: all 0.3s;
+            margin-bottom: 2rem;
+            color: var(--dark-color);
         }
-        
-        .add-content i {
-            font-size: 48px;
-            margin-bottom: 15px;
-            color: #4CAF50;
-        }
-        
-        .add-content p {
-            font-size: 18px;
-            font-weight: 500;
-            margin: 0;
-            color: #555;
-        }
-        
-        .add-card:hover .add-content {
-            transform: scale(1.05);
-        }
-        
-        .no-data {
-            text-align: center;
-            padding: 50px 20px;
-            color: #a0a0a0;
-            font-style: italic;
-            font-size: 18px;
-            background: #f9f9f9;
-            border-radius: 10px;
-            margin-bottom: 25px;
-        }
-        
-        .loading {
-            text-align: center;
-            padding: 50px 20px;
-            color: #666;
-            font-size: 18px;
-            background: #f9f9f9;
-            border-radius: 10px;
-            margin-bottom: 25px;
-            animation: pulse 1.5s infinite;
-        }
-        
-        @keyframes pulse {
-            0% { opacity: 0.6; }
-            50% { opacity: 1; }
-            100% { opacity: 0.6; }
-        }
-        
-        .modal-content {
-            background-color: #ffffff;
-            color: #333;
-            border-radius: 10px;
-        }
-        
-        .modal-header {
-            border-bottom-color: #e9ecef;
-        }
-        
-        .modal-footer {
-            border-top-color: #e9ecef;
-        }
-        
-        .form-control {
-            background-color: #f8f9fa;
-            border-color: #e9ecef;
-            color: #333;
-        }
-        
-        .form-control:focus {
-            background-color: #ffffff;
-            border-color: #4CAF50;
-            color: #333;
-            box-shadow: 0 0 0 0.25rem rgba(76, 175, 80, 0.25);
-        }
-        
-        .btn-close {
-            filter: none;
-        }
-        
-        .tab-content {
+
+        /* Главный интерфейс */
+        .admin-interface {
             display: none;
-        }
-        
-        .tab-content.active {
-            display: block;
-        }
-        
-        /* Стили для страницы логина */
-        .admin-login-page {
-            display: flex;
             min-height: 100vh;
-            justify-content: center;
-            align-items: center;
-            background-color: #f0f2f5;
         }
-        
-        .admin-login-container {
-            width: 400px;
-            padding: 30px;
-            background-color: #ffffff;
-            border-radius: 10px;
-            box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
+
+        .sidebar {
+            width: 280px;
+            background: white;
+            border-right: 1px solid #e0e0e0;
+            height: 100vh;
+            position: fixed;
+            left: 0;
+            top: 0;
+            overflow-y: auto;
+            z-index: 1000;
         }
-        
-        .admin-login-container h1 {
-            color: #2c3e50;
-            text-align: center;
-            margin-bottom: 30px;
-            font-size: 24px;
+
+        .sidebar-header {
+            padding: 1.5rem;
+            border-bottom: 1px solid #e0e0e0;
+            background: var(--primary-color);
+            color: white;
         }
-        
-        .admin-form-group {
-            margin-bottom: 20px;
+
+        .sidebar-header h3 {
+            margin: 0;
+            font-size: 1.2rem;
         }
-        
-        .admin-form-group label {
+
+        .nav-menu {
+            padding: 1rem 0;
+        }
+
+        .nav-item {
             display: block;
-            margin-bottom: 8px;
-            color: #34495e;
-            font-weight: 500;
+            padding: 0.75rem 1.5rem;
+            color: #666;
+            text-decoration: none;
+            border-bottom: 1px solid #f0f0f0;
+            transition: all 0.3s;
         }
-        
-        .admin-form-group input {
-            width: 100%;
-            padding: 12px;
-            border: 2px solid #e0e0e0;
-            border-radius: 8px;
-            font-size: 16px;
-            transition: border-color 0.3s ease;
+
+        .nav-item:hover {
+            background: #f8f9fa;
+            color: var(--primary-color);
         }
-        
-        .admin-form-group input:focus {
-            border-color: #4CAF50;
-            outline: none;
+
+        .nav-item.active {
+            background: var(--primary-color);
+            color: white;
         }
-        
-        .admin-login-btn {
-            width: 100%;
-            padding: 12px;
-            background: #4CAF50;
+
+        .nav-item i {
+            margin-right: 0.5rem;
+            width: 20px;
+        }
+
+        .main-content {
+            margin-left: 280px;
+            padding: 2rem;
+            min-height: 100vh;
+        }
+
+        .header {
+            background: white;
+            padding: 1rem 2rem;
+            margin: -2rem -2rem 2rem -2rem;
+            border-bottom: 1px solid #e0e0e0;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+        }
+
+        .header h1 {
+            margin: 0;
+            color: var(--dark-color);
+        }
+
+        .logout-btn {
+            background: var(--danger-color);
             color: white;
             border: none;
-            border-radius: 8px;
-            font-size: 16px;
+            padding: 0.5rem 1rem;
+            border-radius: 6px;
             cursor: pointer;
-            transition: background 0.3s ease;
         }
-        
-        .admin-login-btn:hover {
-            background: #45a049;
+
+        /* Таблицы */
+        .data-table {
+            background: white;
+            border-radius: 8px;
+            overflow: hidden;
+            box-shadow: 0 2px 10px rgba(0,0,0,0.1);
         }
-        
-        .admin-error-message {
-            display: none;
-            color: #e74c3c;
-            font-size: 14px;
-            margin-top: 8px;
-            padding: 8px;
-            background: #fde8e7;
+
+        .table-header {
+            background: var(--light-color);
+            padding: 1rem;
+            border-bottom: 1px solid #e0e0e0;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+        }
+
+        .table-header h3 {
+            margin: 0;
+            color: var(--dark-color);
+        }
+
+        .btn-add {
+            background: var(--success-color);
+            color: white;
+            border: none;
+            padding: 0.5rem 1rem;
+            border-radius: 6px;
+            cursor: pointer;
+        }
+
+        .btn-add:hover {
+            background: var(--secondary-color);
+        }
+
+        .table {
+            margin: 0;
+        }
+
+        .table th {
+            background: var(--light-color);
+            border: none;
+            font-weight: 600;
+            color: var(--dark-color);
+        }
+
+        .table td {
+            border: none;
+            border-bottom: 1px solid #f0f0f0;
+            vertical-align: middle;
+        }
+
+        .btn-edit {
+            background: var(--info-color);
+            color: white;
+            border: none;
+            padding: 0.25rem 0.5rem;
             border-radius: 4px;
+            margin-right: 0.25rem;
+            cursor: pointer;
         }
-        
-        .admin-success-message {
-            display: none;
-            color: #27ae60;
-            font-size: 14px;
-            margin-top: 8px;
-            padding: 8px;
-            background: #e8f5e9;
+
+        .btn-delete {
+            background: var(--danger-color);
+            color: white;
+            border: none;
+            padding: 0.25rem 0.5rem;
             border-radius: 4px;
+            cursor: pointer;
         }
-        
-        /* Стили для уведомлений */
-        .notification {
+
+        /* Модальные окна */
+        .modal-header {
+            background: var(--primary-color);
+            color: white;
+        }
+
+        .modal-header .btn-close {
+            filter: invert(1);
+        }
+
+        /* Модальное окно подтверждения */
+        .modal-header.bg-danger {
+            background: var(--danger-color) !important;
+        }
+
+        .btn-close-white {
+            filter: invert(1) grayscale(100%) brightness(200%);
+        }
+
+        #confirmModal .modal-body {
+            padding: 2rem;
+        }
+
+        #confirmModal .text-danger {
+            color: var(--danger-color) !important;
+        }
+
+        /* Анимация для иконки в модальном окне */
+        #confirmModal .fa-trash-alt {
+            animation: pulse 2s infinite;
+        }
+
+        @keyframes pulse {
+            0% { transform: scale(1); }
+            50% { transform: scale(1.1); }
+            100% { transform: scale(1); }
+        }
+
+        /* Уведомления */
+        .toast-container {
             position: fixed;
             top: 20px;
             right: 20px;
-            padding: 15px 25px;
-            border-radius: 8px;
-            color: white;
-            font-weight: 500;
-            box-shadow: 0 4px 12px rgba(0, 0, 0, 0.15);
             z-index: 9999;
-            opacity: 1;
-            transform: translateY(0);
-            transition: all 0.3s ease;
-            max-width: 400px;
-            word-break: break-word;
         }
-        
-        .notification.hidden {
-            opacity: 0;
-            transform: translateY(-20px);
-            pointer-events: none;
+
+        .toast {
+            min-width: 300px;
         }
-        
-        .notification.success {
-            background-color: #4CAF50;
+
+        /* Адаптивность */
+        @media (max-width: 768px) {
+            .sidebar {
+                transform: translateX(-100%);
+                transition: transform 0.3s;
+            }
+            
+            .sidebar.mobile-open {
+                transform: translateX(0);
+            }
+            
+            .main-content {
+                margin-left: 0;
+            }
+            
+            .mobile-toggle {
+                display: block;
+            }
         }
-        
-        .notification.info {
-            background-color: #3498db;
+
+        .mobile-toggle {
+            display: none;
+            background: var(--primary-color);
+            color: white;
+            border: none;
+            padding: 0.5rem;
+            border-radius: 4px;
         }
-        
-        .notification.warning {
-            background-color: #f39c12;
+
+        .image-preview {
+            max-width: 100px;
+            max-height: 100px;
+            object-fit: cover;
+            border-radius: 4px;
         }
-        
-        .notification.error {
-            background-color: #e74c3c;
+
+        .loading {
+            text-align: center;
+            padding: 2rem;
+            color: #666;
         }
     </style>
 </head>
 <body>
-    <!-- Страница входа -->
-    <div id="loginPage" class="admin-login-page">
-        <div id="loginContainer" class="admin-login-container">
-            <h1>Вход в админ-панель</h1>
-            <form onsubmit="handleLogin(event)">
-                <div class="admin-form-group">
-                    <label for="password">Пароль</label>
-                    <input type="password" id="password" placeholder="Введите пароль" required>
+    <!-- Экран входа -->
+    <div id="loginScreen" class="login-screen">
+        <div class="login-card">
+            <h1><i class="fas fa-lock"></i> Вход в админ-панель</h1>
+            <form id="loginForm">
+                <div class="mb-3">
+                    <label for="password" class="form-label">Пароль</label>
+                    <input type="password" class="form-control" id="password" required>
                 </div>
-                <div id="errorMessage" class="admin-error-message">
-                    Неверный пароль. Пожалуйста, попробуйте снова.
-                </div>
-                <div id="successMessage" class="admin-success-message">
-                    Успешный вход. Перенаправление...
-                </div>
-                <button type="submit" class="admin-login-btn">Войти</button>
+                <button type="submit" class="btn btn-success w-100">
+                    <i class="fas fa-sign-in-alt"></i> Войти
+                </button>
             </form>
+            <div id="loginError" class="alert alert-danger mt-3" style="display: none;"></div>
         </div>
     </div>
 
-    <div class="admin-layout">
-        <div class="sidebar">
-            <div class="logo-container">
-                <a href="{{ url('/') }}">
-                    <img src="{{ asset('icons/logo.svg') }}" alt="Логотип" width="200">
+    <!-- Главный интерфейс -->
+    <div id="adminInterface" class="admin-interface">
+        <!-- Боковая панель -->
+        <nav class="sidebar">
+            <div class="sidebar-header">
+                <h3><i class="fas fa-cogs"></i> Админ-панель</h3>
+            </div>
+            <div class="nav-menu">
+                <a href="#" class="nav-item active" data-section="dashboard">
+                    <i class="fas fa-tachometer-alt"></i> Панель управления
+                </a>
+                <a href="#" class="nav-item" data-section="house_types">
+                    <i class="fas fa-home"></i> Типы домов
+                </a>
+                <a href="#" class="nav-item" data-section="floors">
+                    <i class="fas fa-layer-group"></i> Этажность
+                </a>
+                <a href="#" class="nav-item" data-section="roofs">
+                    <i class="fas fa-mountain"></i> Кровли
+                </a>
+                <a href="#" class="nav-item" data-section="materials">
+                    <i class="fas fa-cube"></i> Материалы
+                </a>
+                <a href="#" class="nav-item" data-section="foundations">
+                    <i class="fas fa-building"></i> Фундаменты
+                </a>
+                <a href="#" class="nav-item" data-section="facades">
+                    <i class="fas fa-paint-brush"></i> Фасады
+                </a>
+                <a href="#" class="nav-item" data-section="electrical">
+                    <i class="fas fa-bolt"></i> Электрика
+                </a>
+                <a href="#" class="nav-item" data-section="wall_finishes">
+                    <i class="fas fa-brush"></i> Отделка стен
+                </a>
+                <a href="#" class="nav-item" data-section="additions">
+                    <i class="fas fa-plus-circle"></i> Дополнения
                 </a>
             </div>
-            <div class="nav-buttons">
-                <button class="nav-button" onclick="showTab('houseTypes')">
-                    <i class="fas fa-home"></i> Типы домов
+        </nav>
+
+        <!-- Основной контент -->
+        <main class="main-content">
+            <div class="header">
+                <button class="mobile-toggle" onclick="toggleSidebar()">
+                    <i class="fas fa-bars"></i>
                 </button>
-                <button class="nav-button active" onclick="showTab('floors')">
-                    <i class="fas fa-layer-group"></i> Этажи
-                </button>
-                <button class="nav-button" onclick="showTab('roofs')">
-                    <i class="fas fa-home"></i> Крыши
-                </button>
-                <button class="nav-button" onclick="showTab('materials')">
-                    <i class="fas fa-cubes"></i> Материалы
-                </button>
-                <button class="nav-button" onclick="showTab('foundations')">
-                    <i class="fas fa-square"></i> Фундаменты
-                </button>
-                <button class="nav-button" onclick="showTab('facades')">
-                    <i class="fas fa-building"></i> Фасады
-                </button>
-                <button class="nav-button" onclick="showTab('electrical')">
-                    <i class="fas fa-bolt"></i> Электрика
-                </button>
-                <button class="nav-button" onclick="showTab('wallFinishes')">
-                    <i class="fas fa-paint-roller"></i> Отделка стен
-                </button>
-                <button class="nav-button" onclick="showTab('additions')">
-                    <i class="fas fa-plus-circle"></i> Дополнения
-                </button>
-                <button class="nav-button" onclick="logout()" style="margin-top: auto;">
+                <h1 id="pageTitle">Панель управления</h1>
+                <button class="logout-btn" onclick="logout()">
                     <i class="fas fa-sign-out-alt"></i> Выйти
                 </button>
             </div>
-        </div>
 
-        <div class="main-content">
-            <div id="houseTypesTab" class="tab-content">
-                <div class="section-header">
-                    <h2>Типы домов</h2>
-                    <button class="btn btn-primary" onclick="showAddHouseTypeForm()">
-                        <i class="fas fa-plus"></i> Добавить тип дома
-                    </button>
+            <div id="contentArea">
+                <div class="loading">
+                    <i class="fas fa-spinner fa-spin fa-2x"></i>
+                    <p>Загрузка данных...</p>
                 </div>
-                <div class="grid" id="houseTypesContainer"></div>
             </div>
-
-            <div id="floorsTab" class="tab-content active">
-                <div class="section-header">
-                    <h2>Этажи</h2>
-                    <button class="btn btn-primary" onclick="showAddFloorForm()">
-                        <i class="fas fa-plus"></i> Добавить этаж
-                    </button>
-                </div>
-                <div class="grid" id="floorsContainer"></div>
-            </div>
-
-            <div id="roofsTab" class="tab-content">
-                <div class="section-header">
-                    <h2>Крыши</h2>
-                    <button class="btn btn-primary" onclick="showAddRoofForm()">
-                        <i class="fas fa-plus"></i> Добавить крышу
-                    </button>
-                </div>
-                <div class="grid" id="roofsContainer"></div>
-            </div>
-
-            <div id="materialsTab" class="tab-content">
-                <div class="section-header">
-                    <h2>Материалы</h2>
-                    <button class="btn btn-primary" onclick="showAddMaterialForm()">
-                        <i class="fas fa-plus"></i> Добавить материал
-                    </button>
-                </div>
-                <div class="grid" id="materialsContainer"></div>
-            </div>
-
-            <div id="foundationsTab" class="tab-content">
-                <div class="section-header">
-                    <h2>Фундаменты</h2>
-                    <button class="btn btn-primary" onclick="showAddFoundationForm()">
-                        <i class="fas fa-plus"></i> Добавить фундамент
-                    </button>
-                </div>
-                <div class="grid" id="foundationsContainer"></div>
-            </div>
-
-            <div id="facadesTab" class="tab-content">
-                <div class="section-header">
-                    <h2>Фасады</h2>
-                    <button class="btn btn-primary" onclick="showAddFacadeForm()">
-                        <i class="fas fa-plus"></i> Добавить фасад
-                    </button>
-                </div>
-                <div class="grid" id="facadesContainer"></div>
-            </div>
-
-            <div id="electricalTab" class="tab-content">
-                <div class="section-header">
-                    <h2>Электрика</h2>
-                    <button class="btn btn-primary" onclick="showAddElectricalForm()">
-                        <i class="fas fa-plus"></i> Добавить электрику
-                    </button>
-                </div>
-                <div class="grid" id="electricalContainer"></div>
-            </div>
-
-            <div id="wallFinishesTab" class="tab-content">
-                <div class="section-header">
-                    <h2>Отделка стен</h2>
-                    <button class="btn btn-primary" onclick="showAddWallFinishForm()">
-                        <i class="fas fa-plus"></i> Добавить отделку
-                    </button>
-                </div>
-                <div class="grid" id="wallFinishesContainer"></div>
-            </div>
-
-            <div id="additionsTab" class="tab-content">
-                <div class="section-header">
-                    <h2>Дополнения</h2>
-                    <button class="btn btn-primary" onclick="showAddAdditionForm()">
-                        <i class="fas fa-plus"></i> Добавить дополнение
-                    </button>
-                </div>
-                <div class="grid" id="additionsContainer"></div>
-            </div>
-
-            <div id="requestsTab" class="tab-content">
-                <div class="section-header">
-                    <h2>Заявки</h2>
-                </div>
-                <div id="requestsContainer"></div>
-            </div>
-        </div>
+        </main>
     </div>
 
-    <!-- Модальное окно для добавления/редактирования элементов -->
-    <div class="modal fade" id="editModal" tabindex="-1" aria-labelledby="modalTitle" aria-hidden="true">
-        <div class="modal-dialog">
-            <div class="modal-content">
-                <div class="modal-header">
-                    <h5 class="modal-title" id="modalTitle">Добавить</h5>
-                    <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
-                </div>
-                <div class="modal-body">
-                    <input type="hidden" id="itemId">
-                    <input type="hidden" id="itemType">
-                    <div class="form-group">
-                        <label for="name" class="form-label">Название</label>
-                        <input type="text" id="name" class="form-input">
-                    </div>
-                    <div class="form-group">
-                        <label for="price" class="form-label">Цена</label>
-                        <input type="number" id="price" class="form-input">
-                    </div>
-                    <div class="form-group">
-                        <label for="multiplier" class="form-label">Множитель</label>
-                        <input type="number" id="multiplier" class="form-input" step="0.1">
-                    </div>
-                    <div class="form-group">
-                        <label for="description" class="form-label">Описание</label>
-                        <textarea id="description" class="form-textarea"></textarea>
-                    </div>
-                    <div class="form-group">
-                        <label for="image" class="form-label">URL изображения</label>
-                        <input type="text" id="image" class="form-input">
-                    </div>
-                    <!-- Контейнер для дополнительных полей -->
-                    <div id="additionalFields"></div>
-                </div>
-                <div class="modal-footer">
-                    <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Отмена</button>
-                    <button type="button" class="btn btn-primary" onclick="saveItem()">Сохранить</button>
-                </div>
-            </div>
-        </div>
-    </div>
-
-    <!-- Модальное окно -->
-    <div class="modal fade" id="adminModal" tabindex="-1" aria-labelledby="modalTitle">
+    <!-- Модальное окно для редактирования -->
+    <div class="modal fade" id="editModal" tabindex="-1">
         <div class="modal-dialog modal-lg">
             <div class="modal-content">
                 <div class="modal-header">
-                    <h5 class="modal-title" id="modalTitle">Заголовок модального окна</h5>
-                    <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Закрыть"></button>
+                    <h5 class="modal-title" id="modalTitle">Редактирование</h5>
+                    <button type="button" class="btn-close" data-bs-dismiss="modal"></button>
                 </div>
-                <div class="modal-body" id="modalBody">
-                    Содержимое модального окна
+                <div class="modal-body">
+                    <form id="editForm">
+                        <div id="formFields"></div>
+                    </form>
+                </div>
+                <div class="modal-footer">
+                    <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Отмена</button>
+                    <button type="button" class="btn btn-success" onclick="saveItem()">Сохранить</button>
                 </div>
             </div>
         </div>
     </div>
 
-    <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/js/bootstrap.bundle.min.js"></script>
-    <script>
-        // Инициализация Bootstrap модального окна
-        const modalElement = document.getElementById('editModal');
-        const modal = new bootstrap.Modal(modalElement);
+    <!-- Модальное окно подтверждения -->
+    <div class="modal fade" id="confirmModal" tabindex="-1">
+        <div class="modal-dialog">
+            <div class="modal-content">
+                <div class="modal-header bg-danger text-white">
+                    <h5 class="modal-title">
+                        <i class="fas fa-exclamation-triangle"></i> Подтверждение действия
+                    </h5>
+                    <button type="button" class="btn-close btn-close-white" data-bs-dismiss="modal"></button>
+                </div>
+                <div class="modal-body">
+                    <div class="d-flex align-items-center">
+                        <div class="text-danger me-3">
+                            <i class="fas fa-trash-alt fa-2x"></i>
+                        </div>
+                        <div>
+                            <p class="mb-1" id="confirmMessage">Вы уверены, что хотите удалить этот элемент?</p>
+                            <small class="text-muted">Это действие нельзя будет отменить.</small>
+                        </div>
+                    </div>
+                </div>
+                <div class="modal-footer">
+                    <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">
+                        <i class="fas fa-times"></i> Отмена
+                    </button>
+                    <button type="button" class="btn btn-danger" id="confirmDeleteBtn">
+                        <i class="fas fa-trash"></i> Удалить
+                    </button>
+                </div>
+            </div>
+        </div>
+    </div>
 
-        // Инициализация модального окна Bootstrap
-        var adminModal = new bootstrap.Modal(document.getElementById('adminModal'));
-    </script>
+    <!-- Контейнер для уведомлений -->
+    <div class="toast-container"></div>
+
+    <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/js/bootstrap.bundle.min.js"></script>
     <script src="{{ asset('js/admin.js') }}"></script>
 </body>
 </html>

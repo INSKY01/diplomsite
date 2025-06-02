@@ -348,7 +348,7 @@
                 <a href="#" class="nav-item" data-section="facades">
                     <i class="fas fa-paint-brush"></i> Фасады
                 </a>
-                <a href="#" class="nav-item" data-section="electrical">
+                <a href="#" class="nav-item" data-section="electricals">
                     <i class="fas fa-bolt"></i> Электрика
                 </a>
                 <a href="#" class="nav-item" data-section="wall_finishes">

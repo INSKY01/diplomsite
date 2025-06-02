@@ -4,53 +4,56 @@ namespace Database\Seeders;
 
 use Illuminate\Database\Seeder;
 use Illuminate\Support\Facades\DB;
+use App\Models\Electrical;
 
 class ElectricalTableSeeder extends Seeder
 {
     public function run()
     {
-        DB::table('electrical')->insert([
+        DB::table('electricals')->delete();
+        
+        Electrical::insert([
             [
-                'name' => 'Базовая электрика',
-                'description' => 'Простая электропроводка с минимальным количеством точек',
-                'price' => 800,
-                'sockets' => 10,
-                'switches' => 5,
-                'lights' => 8,
-                'image' => 'img/electrical1.jpg',
-                'created_at' => now(),
-                'updated_at' => now()
-            ],
-            [
-                'name' => 'Стандарт',
-                'description' => 'Стандартная электропроводка с оптимальным количеством розеток и выключателей',
-                'price' => 1200,
-                'sockets' => 15,
-                'switches' => 8,
-                'lights' => 12,
-                'image' => 'img/electrical2.jpg',
-                'created_at' => now(),
-                'updated_at' => now()
-            ],
-            [
-                'name' => 'Комфорт',
-                'description' => 'Расширенная электрика с дополнительными точками и встроенной защитой',
-                'price' => 1800,
+                'name' => 'Базовая проводка',
+                'description' => 'Стандартная электрификация дома',
+                'price' => 2500,
                 'sockets' => 20,
                 'switches' => 12,
-                'lights' => 16,
-                'image' => 'img/electrical3.jpg',
+                'lights' => 8,
+                'image' => 'https://images.unsplash.com/photo-1621905251189-08b45d6a269e?w=400&h=300&fit=crop&crop=center',
                 'created_at' => now(),
                 'updated_at' => now()
             ],
             [
-                'name' => 'Премиум',
-                'description' => 'Полная электрификация с защитой, автоматикой и подготовкой под "умный дом"',
-                'price' => 2500,
-                'sockets' => 25,
-                'switches' => 15,
-                'lights' => 20,
-                'image' => 'img/electrical4.jpg',
+                'name' => 'Улучшенная проводка',
+                'description' => 'Расширенный набор электрических точек',
+                'price' => 3200,
+                'sockets' => 35,
+                'switches' => 18,
+                'lights' => 15,
+                'image' => 'https://images.unsplash.com/photo-1581092918484-8313de2e8f2d?w=400&h=300&fit=crop&crop=center',
+                'created_at' => now(),
+                'updated_at' => now()
+            ],
+            [
+                'name' => 'Премиум проводка',
+                'description' => 'Полная автоматизация с системами безопасности и управления',
+                'price' => 4500,
+                'sockets' => 50,
+                'switches' => 25,
+                'lights' => 22,
+                'image' => 'https://images.unsplash.com/photo-1558618047-fd6c13a75116?w=400&h=300&fit=crop&crop=center',
+                'created_at' => now(),
+                'updated_at' => now()
+            ],
+            [
+                'name' => 'Другое',
+                'description' => 'Индивидуальная электрификация по техническому заданию',
+                'price' => 0,
+                'sockets' => 0,
+                'switches' => 0,
+                'lights' => 0,
+                'image' => 'https://images.unsplash.com/photo-1563453392212-326f5e854473?w=400&h=300&fit=crop&crop=center',
                 'created_at' => now(),
                 'updated_at' => now()
             ]

@@ -1,0 +1,7 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<svg width="400" height="300" viewBox="0 0 400 300" xmlns="http://www.w3.org/2000/svg">
+    <rect width="400" height="300" fill="#FFC10710"/>
+    <rect x="20" y="20" width="360" height="260" fill="white" stroke="#FFC107" stroke-width="2" rx="10"/>
+    <circle cx="200" cy="120" r="40" fill="#FFC10730"/>
+    <rect x="170" y="90" width="60" height="60" fill="#FFC107" rx="5"/>
+    <rect x="185" y="105" width="30" height="30" fill="white" rx="3"/><text x="200" y="190" text-anchor="middle" font-family="Arial, sans-serif" font-size="18" font-weight="bold" fill="#FFC107">Другое</text></svg>

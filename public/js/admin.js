@@ -67,16 +67,13 @@ const tableConfig = {
             image: 'Изображение'
         }
     },
-    electrical: {
+    electricals: {
         title: 'Электрика',
-        fields: ['name', 'description', 'price', 'sockets', 'switches', 'lights', 'image'],
+        fields: ['name', 'description', 'price', 'image'],
         labels: {
             name: 'Название',
             description: 'Описание',
             price: 'Цена',
-            sockets: 'Розетки',
-            switches: 'Выключатели',
-            lights: 'Светильники',
             image: 'Изображение'
         }
     },
@@ -106,15 +103,26 @@ const tableConfig = {
 // Инициализация при загрузке страницы
 document.addEventListener('DOMContentLoaded', function() {
     // Настройка CSRF токена
-    const token = document.querySelector('meta[name="csrf-token"]').getAttribute('content');
+    const token = document.querySelector('meta[name="csrf-token"]');
+    if (!token) {
+        console.error('CSRF токен не найден');
+        return;
+    }
+    
+    const csrfToken = token.getAttribute('content');
     
     // Настройка заголовков для AJAX запросов
     const originalFetch = window.fetch;
     window.fetch = function(url, options = {}) {
         options.headers = options.headers || {};
-        options.headers['X-CSRF-TOKEN'] = token;
-        options.headers['Content-Type'] = 'application/json';
+        options.headers['X-CSRF-TOKEN'] = csrfToken;
+        
+        // Устанавливаем заголовки только если не передается FormData
+        if (!(options.body instanceof FormData)) {
+            options.headers['Content-Type'] = 'application/json';
+        }
         options.headers['Accept'] = 'application/json';
+        
         return originalFetch(url, options);
     };
 
@@ -178,13 +186,15 @@ function setupLoginForm() {
         
         const password = document.getElementById('password').value;
         const errorDiv = document.getElementById('loginError');
-        
+        const csrfToken = document.querySelector('meta[name="csrf-token"]').getAttribute('content');
+
         try {
             const response = await fetch('/admin/login', {
                 method: 'POST',
                 headers: {
                     'Content-Type': 'application/json',
-                    'X-CSRF-TOKEN': document.querySelector('meta[name="csrf-token"]').getAttribute('content')
+                    'X-CSRF-TOKEN': csrfToken,
+                    'Accept': 'application/json'
                 },
                 body: JSON.stringify({ password })
             });
@@ -259,21 +269,21 @@ function showDashboard() {
             <div class="col-md-12">
                 <h2>Добро пожаловать в админ-панель!</h2>
                 <p>Выберите раздел в боковом меню для управления данными.</p>
-            </div>
+        </div>
         </div>
         <div class="row mt-4">
             ${Object.entries(tableConfig).map(([key, config]) => `
                 <div class="col-md-4 mb-3">
-                    <div class="card">
+            <div class="card">
                         <div class="card-body">
                             <h5 class="card-title">${config.title}</h5>
                             <p class="card-text">Управление данными: ${config.title.toLowerCase()}</p>
                             <button class="btn btn-primary" onclick="switchSection('${key}')">
                                 Перейти
-                            </button>
-                        </div>
+                        </button>
                     </div>
                 </div>
+            </div>
             `).join('')}
         </div>
     `;
@@ -290,8 +300,8 @@ function showTableSection(section) {
                 <h3>${config.title}</h3>
                 <button class="btn-add" onclick="addItem('${section}')">
                     <i class="fas fa-plus"></i> Добавить
-                </button>
-            </div>
+                    </button>
+                </div>
             <div class="table-responsive">
                 <table class="table table-striped">
                     <thead>
@@ -310,8 +320,8 @@ function showTableSection(section) {
                     </tbody>
                 </table>
             </div>
-        </div>
-    `;
+            </div>
+        `;
     
     // Загружаем данные для таблицы
     loadTableData(section);
@@ -370,9 +380,9 @@ function renderTable(section, data) {
                 </td>
             </tr>
         `;
-        return;
-    }
-    
+                return;
+            }
+
     tableBody.innerHTML = data.map(item => `
         <tr>
             <td>${item.id}</td>
@@ -394,10 +404,10 @@ function renderTable(section, data) {
             <td>
                 <button class="btn-edit" onclick="editItem('${section}', ${item.id})">
                     <i class="fas fa-edit"></i>
-                </button>
+                        </button>
                 <button class="btn-delete" onclick="deleteItem('${section}', ${item.id})">
                     <i class="fas fa-trash"></i>
-                </button>
+                        </button>
             </td>
         </tr>
     `).join('');
@@ -419,8 +429,8 @@ function addItem(section) {
                 <div class="mb-3">
                     <label for="${field}" class="form-label">${label}</label>
                     <textarea class="form-control" id="${field}" name="${field}" rows="3"></textarea>
-                </div>
-            `;
+        </div>
+    `;
         } else if (field === 'category') {
             return `
                 <div class="mb-3">
@@ -432,29 +442,29 @@ function addItem(section) {
                         <option value="utility">Хозяйственные</option>
                         <option value="safety">Безопасность</option>
                     </select>
-                </div>
-            `;
+            </div>
+        `;
         } else if (field === 'price' || field === 'value' || field === 'sockets' || field === 'switches' || field === 'lights') {
             return `
                 <div class="mb-3">
                     <label for="${field}" class="form-label">${label}</label>
                     <input type="number" class="form-control" id="${field}" name="${field}" ${field === 'multiplier' ? 'step="0.1"' : ''}>
-                </div>
-            `;
+        </div>
+    `;
         } else if (field === 'multiplier') {
             return `
                 <div class="mb-3">
                     <label for="${field}" class="form-label">${label}</label>
                     <input type="number" class="form-control" id="${field}" name="${field}" step="0.1">
-                </div>
-            `;
+        </div>
+    `;
         } else {
             return `
                 <div class="mb-3">
                     <label for="${field}" class="form-label">${label}</label>
                     <input type="text" class="form-control" id="${field}" name="${field}">
-                </div>
-            `;
+        </div>
+    `;
         }
     }).join('');
     
@@ -473,9 +483,9 @@ function editItem(section, id) {
     
     if (!item) {
         showToast('Элемент не найден', 'error');
-        return;
-    }
-    
+                return;
+            }
+            
     document.getElementById('modalTitle').textContent = `Редактировать ${config.title.toLowerCase()}`;
     
     // Создаем форму с заполненными данными
@@ -489,8 +499,8 @@ function editItem(section, id) {
                 <div class="mb-3">
                     <label for="${field}" class="form-label">${label}</label>
                     <textarea class="form-control" id="${field}" name="${field}" rows="3">${value}</textarea>
-                </div>
-            `;
+                    </div>
+                `;
         } else if (field === 'category') {
             return `
                 <div class="mb-3">
@@ -509,8 +519,8 @@ function editItem(section, id) {
                 <div class="mb-3">
                     <label for="${field}" class="form-label">${label}</label>
                     <input type="number" class="form-control" id="${field}" name="${field}" value="${value}" ${field === 'multiplier' ? 'step="0.1"' : ''}>
-                </div>
-            `;
+                    </div>
+                `;
         } else if (field === 'multiplier') {
             return `
                 <div class="mb-3">
@@ -523,8 +533,8 @@ function editItem(section, id) {
                 <div class="mb-3">
                     <label for="${field}" class="form-label">${label}</label>
                     <input type="text" class="form-control" id="${field}" name="${field}" value="${value}">
-                </div>
-            `;
+                    </div>
+                `;
         }
     }).join('');
     
@@ -572,7 +582,7 @@ async function saveItem() {
             showToast(result.message || 'Данные успешно сохранены', 'success');
             editModal.hide();
             loadTableData(section);
-        } else {
+                } else {
             showToast('Ошибка сохранения: ' + (result.error || 'Неизвестная ошибка'), 'error');
         }
     } catch (error) {
@@ -618,7 +628,7 @@ async function deleteItem(section, id) {
             if (response.ok && result.success) {
                 showToast(result.message || 'Элемент успешно удален', 'success');
                 loadTableData(section);
-            } else {
+        } else {
                 showToast('Ошибка удаления: ' + (result.error || 'Неизвестная ошибка'), 'error');
             }
         } catch (error) {

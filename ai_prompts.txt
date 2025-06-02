@@ -1,0 +1,146 @@
+ПРОМПТЫ ДЛЯ AI ГЕНЕРАТОРОВ ИЗОБРАЖЕНИЙ (DALL-E, Midjourney, Stable Diffusion)
+
+=== ТИПЫ ДОМОВ ===
+
+1. Каркасный дом:
+"Modern wooden frame house, Scandinavian style, timber construction visible, architectural photography, clean lines, professional exterior photo, daylight, 4:3 aspect ratio"
+
+2. Дом из бруса:
+"Beautiful log house, natural wood exterior, traditional timber construction, cozy cabin style, professional architectural photography, natural lighting, 4:3 aspect ratio"
+
+3. Кирпичный дом:
+"Modern brick house, red brick exterior, contemporary design, clean architectural lines, professional real estate photography, clear sky, 4:3 aspect ratio"
+
+4. Дом из газобетона:
+"Modern concrete house, aerated concrete blocks, minimalist design, contemporary architecture, professional photography, clean exterior, 4:3 aspect ratio"
+
+=== ЭТАЖНОСТЬ ===
+
+1. Одноэтажный дом:
+"Single-story modern house, one floor, horizontal architecture, contemporary design, professional exterior photography, landscape orientation, 4:3 aspect ratio"
+
+2. Двухэтажный дом:
+"Two-story modern house, contemporary architecture, clean lines, professional real estate photography, beautiful exterior, 4:3 aspect ratio"
+
+3. Дом с мансардой:
+"Two-story house with attic, modern design, visible attic windows, contemporary architecture, professional photography, 4:3 aspect ratio"
+
+=== КРОВЛИ ===
+
+1. Металлочерепица:
+"Metal tile roof detail, modern roofing material, architectural close-up, professional construction photography, clear texture, 4:3 aspect ratio"
+
+2. Мягкая кровля:
+"Asphalt shingle roof, soft roofing material, architectural detail, modern house roof, professional photography, 4:3 aspect ratio"
+
+3. Профнастил:
+"Corrugated metal roofing, modern industrial roofing, architectural detail, professional construction photo, 4:3 aspect ratio"
+
+4. Керамическая черепица:
+"Clay tile roof, traditional ceramic roofing, Mediterranean style, architectural detail, professional photography, 4:3 aspect ratio"
+
+=== МАТЕРИАЛЫ ===
+
+1. Каркас + OSB:
+"Wooden frame construction with OSB panels, building process, construction detail, professional construction photography, 4:3 aspect ratio"
+
+2. Профилированный брус:
+"Profiled timber construction, wooden beam detail, natural wood texture, construction material, professional photo, 4:3 aspect ratio"
+
+3. Керамический кирпич:
+"Red ceramic brick wall, construction detail, masonry work, building material texture, professional construction photography, 4:3 aspect ratio"
+
+4. Газобетонные блоки:
+"Aerated concrete blocks, construction material, building blocks detail, modern construction, professional photography, 4:3 aspect ratio"
+
+=== ФУНДАМЕНТЫ ===
+
+1. Свайно-винтовой:
+"Screw pile foundation, modern foundation system, construction detail, professional building photography, 4:3 aspect ratio"
+
+2. Ленточный мелкозаглубленный:
+"Shallow strip foundation, concrete foundation, construction detail, building foundation, professional photo, 4:3 aspect ratio"
+
+3. Ленточный заглубленный:
+"Deep strip foundation, concrete foundation system, construction detail, professional building photography, 4:3 aspect ratio"
+
+4. Монолитная плита:
+"Concrete slab foundation, monolithic foundation, construction detail, modern building foundation, professional photo, 4:3 aspect ratio"
+
+=== ФАСАДЫ ===
+
+1. Виниловый сайдинг:
+"Vinyl siding exterior, modern house facade, clean lines, contemporary design, professional architectural photography, 4:3 aspect ratio"
+
+2. Имитация бруса:
+"Wood-look siding, timber imitation facade, modern exterior, architectural detail, professional photography, 4:3 aspect ratio"
+
+3. Фиброцементные панели:
+"Fiber cement panels, modern facade material, contemporary exterior, architectural detail, professional photography, 4:3 aspect ratio"
+
+4. Клинкерная плитка:
+"Clinker tile facade, brick-look exterior, modern architectural detail, professional building photography, 4:3 aspect ratio"
+
+=== ЭЛЕКТРИКА ===
+
+1. Базовая проводка:
+"Basic electrical outlet and switch, simple electrical installation, home electrical system, clean modern design, 4:3 aspect ratio"
+
+2. Улучшенная проводка:
+"Modern electrical installation, contemporary switches and outlets, improved electrical system, professional photo, 4:3 aspect ratio"
+
+3. Премиум проводка:
+"Premium smart home electrical system, modern touch panels, high-end electrical installation, professional photography, 4:3 aspect ratio"
+
+=== ОТДЕЛКА СТЕН ===
+
+1. Покраска стен:
+"Painted interior walls, clean wall finish, modern interior design, professional interior photography, neutral colors, 4:3 aspect ratio"
+
+2. Обои:
+"Wallpapered interior wall, modern wallpaper design, interior wall finishing, professional interior photography, 4:3 aspect ratio"
+
+3. Декоративная штукатурка:
+"Decorative plaster wall finish, textured interior wall, modern interior design, professional interior photography, 4:3 aspect ratio"
+
+4. Деревянные панели:
+"Wood panel wall finish, interior wood cladding, modern interior design, natural wood texture, professional photography, 4:3 aspect ratio"
+
+=== ДОПОЛНЕНИЯ ===
+
+1. Терраса:
+"Modern house terrace, outdoor wooden deck, contemporary exterior design, professional architectural photography, 4:3 aspect ratio"
+
+2. Веранда:
+"House veranda, covered porch, traditional architectural element, professional exterior photography, 4:3 aspect ratio"
+
+3. Камин:
+"Modern interior fireplace, contemporary fireplace design, cozy living room, professional interior photography, 4:3 aspect ratio"
+
+4. Гараж:
+"Modern house garage, attached garage, contemporary architecture, professional exterior photography, 4:3 aspect ratio"
+
+=== НАСТРОЙКИ ДЛЯ РАЗНЫХ AI ===
+
+Midjourney:
+- Добавлять: --ar 4:3 --v 6 --style raw
+- Для реалистичности: --style raw или --style realistic
+
+DALL-E 3:
+- Указывать размер: "4:3 aspect ratio"
+- Добавлять: "photorealistic, high quality, professional photography"
+
+Stable Diffusion:
+- Негативные промпты: "blurry, low quality, distorted, cartoon, anime"
+- Параметры: Steps: 30-50, CFG Scale: 7-12
+
+=== КЛЮЧЕВЫЕ СЛОВА ДЛЯ КАЧЕСТВА ===
+- professional photography
+- architectural photography
+- high resolution
+- clean lines
+- modern design
+- daylight
+- clear details
+- realistic
+- photorealistic 

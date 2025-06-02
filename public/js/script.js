@@ -50,9 +50,11 @@ document.addEventListener("DOMContentLoaded", function() {
     const toggleButton = document.querySelector('.toggle-button');
     const leftSideContent = document.querySelector('.fourth-section__left-side');
 
-    toggleButton.addEventListener('click', function() {
-        leftSideContent.style.display = leftSideContent.style.display === 'block' ? 'none' : 'block';
-    });
+    if (toggleButton && leftSideContent) {
+        toggleButton.addEventListener('click', function() {
+            leftSideContent.style.display = leftSideContent.style.display === 'block' ? 'none' : 'block';
+        });
+    }
 });
 
 

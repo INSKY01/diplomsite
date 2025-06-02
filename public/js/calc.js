@@ -2,6 +2,8 @@ let currentStep = 1;
 const totalSteps = 10;
 let currentTotalPrice = 0;
 
+// Глобальная переменная для хранения данных админки
+let adminData = null;
 
 let selections = {
     houseType: null,
@@ -23,6 +25,14 @@ let selections = {
 };
 
 function setDefaultValues() {
+    // Проверяем, что данные загружены
+    if (!adminData) {
+        console.log('adminData not loaded yet, skipping setDefaultValues');
+        return;
+    }
+    
+    console.log('Setting default values...');
+    
     // Устанавливаем дефолтные значения для селекторов
     if (adminData.houseTypes && adminData.houseTypes.length > 0) {
         selections.houseType = adminData.houseTypes[0].id;
@@ -48,11 +58,13 @@ function setDefaultValues() {
     if (adminData.wallFinishes && adminData.wallFinishes.length > 0) {
         selections.wallFinish = adminData.wallFinishes[0].id;
     }
+    
+    console.log('Default values set:', selections);
 }
 
 // Загрузка данных из API
 function loadAdminData() {
-    fetch('/api/calculator-data')
+    fetch('/api/calculator/data')
         .then(response => {
             if (!response.ok) {
                 throw new Error('Network response was not ok');
@@ -504,10 +516,17 @@ function renderHouseTypes() {
 
     console.log('Rendering house types:', adminData.houseTypes);
 
-    container.innerHTML = adminData.houseTypes.map(house => {
+    // Добавляем класс для количества колонок
+    container.className = 'options-container four-columns';
+
+    container.innerHTML = adminData.houseTypes.map((house, index) => {
         const isSelected = parseInt(selections.houseType) === parseInt(house.id);
+        const isOther = house.name === 'Другое';
+        // "Другое" на полную ширину только если элементов больше 4
+        const fullWidthClass = isOther && (adminData.houseTypes.length > 4) ? ' full-width' : '';
+        
         return `
-            <div class="option-card ${isSelected ? 'selected' : ''}" onclick="selectHouseType(${house.id})">
+            <div class="option-card ${isSelected ? 'selected' : ''}${fullWidthClass}" onclick="selectHouseType(${house.id})" data-name="${house.name}">
                 <div class="option-image">
                     <img src="${house.image}" alt="${house.name}">
                 </div>
@@ -587,12 +606,20 @@ function renderFloors() {
 
     console.log('Rendering floors:', adminData.floors);
 
+    // Добавляем класс для количества колонок
+    container.className = adminData.floors.length <= 4 ? 'options-container four-columns' : 'options-container four-columns';
+
     container.innerHTML = '';
-    adminData.floors.forEach(floor => {
+    adminData.floors.forEach((floor, index) => {
         const isSelected = parseInt(selections.floor) === parseInt(floor.id);
+        const isOther = floor.name === 'Другое';
+        // "Другое" на полную ширину только если элементов больше 4
+        const fullWidthClass = isOther && (adminData.floors.length > 4) ? ' full-width' : '';
+        
         const card = document.createElement('div');
-        card.className = `option-card ${isSelected ? 'selected' : ''}`;
+        card.className = `option-card ${isSelected ? 'selected' : ''}${fullWidthClass}`;
         card.setAttribute('data-id', floor.id);
+        card.setAttribute('data-name', floor.name);
         card.onclick = () => selectFloor(floor.id);
         
         card.innerHTML = `
@@ -626,10 +653,16 @@ function renderRoofs() {
 
     console.log('Rendering roofs:', adminData.roofs);
 
-    container.innerHTML = adminData.roofs.map(roof => {
+    // Добавляем класс для количества колонок
+    container.className = 'options-container four-columns';
+
+    container.innerHTML = adminData.roofs.map((roof, index) => {
         const isSelected = parseInt(selections.roof) === parseInt(roof.id);
+        const isOther = roof.name === 'Другое';
+        const fullWidthClass = isOther && (adminData.roofs.length > 4) ? ' full-width' : '';
+        
         return `
-            <div class="option-card ${isSelected ? 'selected' : ''}" onclick="selectRoof(${roof.id})">
+            <div class="option-card ${isSelected ? 'selected' : ''}${fullWidthClass}" onclick="selectRoof(${roof.id})" data-name="${roof.name}">
                 <div class="option-image">
                     <img src="${roof.image || 'img/image_placeholder.png'}" alt="${roof.name}">
                 </div>
@@ -659,10 +692,16 @@ function renderMaterials() {
 
     console.log('Rendering materials:', adminData.materials);
 
-    container.innerHTML = adminData.materials.map(material => {
+    // Добавляем класс для количества колонок
+    container.className = 'options-container four-columns';
+
+    container.innerHTML = adminData.materials.map((material, index) => {
         const isSelected = parseInt(selections.material) === parseInt(material.id);
+        const isOther = material.name === 'Другое';
+        const fullWidthClass = isOther && (adminData.materials.length > 4) ? ' full-width' : '';
+        
         return `
-            <div class="option-card ${isSelected ? 'selected' : ''}" onclick="selectMaterial(${material.id})">
+            <div class="option-card ${isSelected ? 'selected' : ''}${fullWidthClass}" onclick="selectMaterial(${material.id})" data-name="${material.name}">
                 <div class="option-image">
                     <img src="${material.image || 'img/image_placeholder.png'}" alt="${material.name}">
                 </div>
@@ -695,21 +734,30 @@ function renderFoundations() {
 
     console.log('Foundations data:', adminData.foundations); 
 
-    const html = adminData.foundations.map(foundation => `
-        <div class="option-card ${selections.foundation === foundation.id ? 'selected' : ''}"
-             onclick="selectFoundation(${foundation.id})">
-            <div class="option-image">
-                <img src="${foundation.image || 'img/image_placeholder.png'}" 
-                     alt="${foundation.name}"
-                     onerror="this.src='img/image_placeholder.png'">
+    // Добавляем класс для количества колонок
+    container.className = 'options-container four-columns';
+
+    const html = adminData.foundations.map((foundation, index) => {
+        const isSelected = parseInt(selections.foundation) === parseInt(foundation.id);
+        const isOther = foundation.name === 'Другое';
+        const fullWidthClass = isOther && (adminData.foundations.length > 4) ? ' full-width' : '';
+        
+        return `
+            <div class="option-card ${isSelected ? 'selected' : ''}${fullWidthClass}" onclick="selectFoundation(${foundation.id})" data-name="${foundation.name}">
+                <div class="option-image">
+                    <img src="${foundation.image || 'img/image_placeholder.png'}" 
+                         alt="${foundation.name}"
+                         onerror="this.src='img/image_placeholder.png'">
+                </div>
+                <div class="option-details">
+                    <h3>${foundation.name}</h3>
+                    <p>${foundation.description || ''}</p>
+                    <div class="option-price">${parseInt(foundation.price).toLocaleString()} ₽/м²</div>
+                </div>
+                <div class="option-selected-indicator"><i class="fas fa-check"></i></div>
             </div>
-            <div class="option-info">
-                <h3>${foundation.name}</h3>
-                <p class="price">Стоимость: ${foundation.price.toLocaleString()} ₽/м²</p>
-                <p class="description">${foundation.description || ''}</p>
-            </div>
-        </div>
-    `).join('');
+        `;
+    }).join('');
 
     console.log('Generated HTML:', html); 
     container.innerHTML = html;
@@ -728,10 +776,16 @@ function renderFacades() {
         return;
     }
 
-    container.innerHTML = adminData.facades.map(facade => {
+    // Добавляем класс для количества колонок
+    container.className = 'options-container four-columns';
+
+    container.innerHTML = adminData.facades.map((facade, index) => {
         const isSelected = parseInt(selections.facade) === parseInt(facade.id);
+        const isOther = facade.name === 'Другое';
+        const fullWidthClass = isOther && (adminData.facades.length > 4) ? ' full-width' : '';
+        
         return `
-            <div class="option-card ${isSelected ? 'selected' : ''}" onclick="selectFacade(${facade.id})">
+            <div class="option-card ${isSelected ? 'selected' : ''}${fullWidthClass}" onclick="selectFacade(${facade.id})" data-name="${facade.name}">
                 <div class="option-image">
                     <img src="${facade.image || 'img/image_placeholder.png'}" alt="${facade.name}">
                 </div>
@@ -769,14 +823,20 @@ function renderElectrical() {
         return true;
     });
 
-    container.innerHTML = uniqueElectricalOptions.map(item => {
+    // Добавляем класс для количества колонок
+    container.className = 'options-container four-columns';
+
+    container.innerHTML = uniqueElectricalOptions.map((item, index) => {
         const isSelected = parseInt(selections.electrical) === parseInt(item.id);
+        const isOther = item.name === 'Другое';
+        // "Другое" на полную ширину только если элементов больше 4
+        const fullWidthClass = isOther && (uniqueElectricalOptions.length > 4) ? ' full-width' : '';
         
         // Проверяем и формируем путь к изображению
         const imagePath = item.image || '/img/electrical/basic.jpg';
         
         return `
-            <div class="option-card ${isSelected ? 'selected' : ''}" onclick="selectElectrical(${item.id})">
+            <div class="option-card ${isSelected ? 'selected' : ''}${fullWidthClass}" onclick="selectElectrical(${item.id})" data-name="${item.name}">
                 <div class="option-image">
                     <img src="${imagePath}" 
                          alt="${item.name}" 
@@ -815,10 +875,16 @@ function renderWallFinishes() {
 
     console.log('Rendering wall finishes:', adminData.wallFinishes);
 
-    container.innerHTML = adminData.wallFinishes.map(finish => {
+    // Добавляем класс для количества колонок
+    container.className = 'options-container four-columns';
+
+    container.innerHTML = adminData.wallFinishes.map((finish, index) => {
         const isSelected = parseInt(selections.wallFinish) === parseInt(finish.id);
+        const isOther = finish.name === 'Другое';
+        const fullWidthClass = isOther && (adminData.wallFinishes.length > 4) ? ' full-width' : '';
+        
         return `
-            <div class="option-card ${isSelected ? 'selected' : ''}" onclick="selectWallFinish(${finish.id})">
+            <div class="option-card ${isSelected ? 'selected' : ''}${fullWidthClass}" onclick="selectWallFinish(${finish.id})" data-name="${finish.name}">
                 <div class="option-image">
                     <img src="${finish.image || 'img/image_placeholder.png'}" alt="${finish.name}">
                 </div>
@@ -848,10 +914,17 @@ function renderAdditions() {
 
     console.log('Rendering additions:', adminData.additions);
 
-    container.innerHTML = adminData.additions.map(addition => {
+    // Добавляем класс для количества колонок
+    container.className = 'options-container four-columns';
+
+    container.innerHTML = adminData.additions.map((addition, index) => {
         const isSelected = selections.additions.includes(addition.id);
+        const isOther = addition.name === 'Другое';
+        // "Другое" должно быть на полную ширину если это последний элемент
+        const fullWidthClass = isOther && (adminData.additions.length > 4) ? ' full-width' : '';
+        
         return `
-            <div class="option-card ${isSelected ? 'selected' : ''}" onclick="toggleAddition(${addition.id})">
+            <div class="option-card ${isSelected ? 'selected' : ''}${fullWidthClass}" onclick="toggleAddition(${addition.id})" data-name="${addition.name}">
                 <div class="option-image">
                     <img src="${addition.image || 'img/image_placeholder.png'}" alt="${addition.name}">
                 </div>
@@ -983,17 +1056,22 @@ function updateNavigationButtons() {
 }
 
 function initializeCalculator() {
-    loadAdminData();
-    setDefaultValues();
+    console.log('Initializing calculator...');
     
+    // Сначала загружаем данные
+    loadAdminData();
+    
+    // Инициализируем обработчики событий
     const areaInput = document.getElementById('areaInput');
     if (areaInput) {
         areaInput.addEventListener('input', calculateTotal);
     }
 
-    renderCurrentStep();
+    // Обновляем интерфейс
     updateStepDisplay();
     updateNavigationButtons();
+    
+    console.log('Calculator initialized');
 }
 
 function selectFloor(id) {
@@ -1235,28 +1313,28 @@ function submitForm() {
 
         // Создаем объект данных для отправки
         const requestData = {
-            houseType: selections.houseType,
+            house_type_id: selections.houseType,
             area: selections.area,
-            floor: selections.floor,
-            roof: selections.roof,
-            material: selections.material,
-            foundation: selections.foundation,
-            facade: selections.facade,
-            electrical: selections.electrical,
-            wallFinish: selections.wallFinish,
-            additions: selections.additions,
+            floor_id: selections.floor,
+            roof_id: selections.roof,
+            material_id: selections.material,
+            foundation_id: selections.foundation,
+            facade_id: selections.facade,
+            electrical_id: selections.electrical,
+            wall_finish_id: selections.wallFinish,
+            additions: selections.additions || [],
             name: document.getElementById('contactName').value.trim(),
             phone: document.getElementById('contactPhone').value.trim(),
             email: document.getElementById('contactEmail').value.trim(),
             comment: document.getElementById('contactComment')?.value.trim() || '',
-            totalPrice: currentTotalPrice
+            total_price: currentTotalPrice
         };
 
         // Показываем индикатор загрузки
         showNotification('Отправка заявки...', 'info');
 
         // Отправка данных на сервер
-        fetch('/api/requests', {
+        fetch('/api/calculator/submit-request', {
             method: 'POST',
             headers: {
                 'Content-Type': 'application/json',

@@ -13,18 +13,17 @@ class DatabaseSeeder extends Seeder
      */
     public function run(): void
     {
-        // User::factory(10)->create();
-
-        User::factory()->create([
-            'name' => 'Test User',
-            'email' => 'test@example.com',
-        ]);
-        
-        // Запускаем сиды для калькулятора
+        // Запускаем все сиды для калькулятора с обновленными изображениями
         $this->call([
             HouseTypesTableSeeder::class,
+            MaterialsTableSeeder::class,
+            FoundationsTableSeeder::class,
             FloorsTableSeeder::class,
+            RoofsTableSeeder::class,
+            FacadesTableSeeder::class,
             ElectricalTableSeeder::class,
+            WallFinishesTableSeeder::class,
+            AdditionsTableSeeder::class,
         ]);
     }
 }

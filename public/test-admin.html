@@ -1,0 +1,87 @@
+<!DOCTYPE html>
+<html lang="ru">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Тест админки</title>
+</head>
+<body>
+    <h1>Тест админской панели</h1>
+    
+    <div>
+        <h2>Проверка API</h2>
+        <button onclick="testAuth()">Проверить аутентификацию</button>
+        <button onclick="testLogin()">Войти (пароль: Respons1)</button>
+        <button onclick="testData()">Загрузить данные</button>
+        <button onclick="testTableData()">Загрузить данные таблицы</button>
+    </div>
+    
+    <div id="results" style="margin-top: 20px; background: #f5f5f5; padding: 10px; border-radius: 5px;">
+        <h3>Результаты:</h3>
+        <pre id="output"></pre>
+    </div>
+
+    <script>
+        function log(message) {
+            const output = document.getElementById('output');
+            output.textContent += new Date().toLocaleTimeString() + ': ' + message + '\n';
+        }
+
+        async function testAuth() {
+            try {
+                const response = await fetch('/admin/check-auth');
+                const data = await response.json();
+                log('Проверка аутентификации: ' + JSON.stringify(data));
+            } catch (error) {
+                log('Ошибка проверки аутентификации: ' + error.message);
+            }
+        }
+
+        async function testLogin() {
+            try {
+                // Сначала получаем CSRF токен
+                const tokenResponse = await fetch('/admin');
+                const html = await tokenResponse.text();
+                const parser = new DOMParser();
+                const doc = parser.parseFromString(html, 'text/html');
+                const csrfToken = doc.querySelector('meta[name="csrf-token"]').getAttribute('content');
+                
+                const response = await fetch('/admin/login', {
+                    method: 'POST',
+                    headers: {
+                        'Content-Type': 'application/json',
+                        'X-CSRF-TOKEN': csrfToken,
+                        'Accept': 'application/json'
+                    },
+                    body: JSON.stringify({ password: 'Respons1' })
+                });
+                
+                const data = await response.json();
+                log('Вход в систему: ' + JSON.stringify(data));
+            } catch (error) {
+                log('Ошибка входа: ' + error.message);
+            }
+        }
+
+        async function testData() {
+            try {
+                const response = await fetch('/admin/api/data');
+                const data = await response.json();
+                log('Загрузка всех данных: ' + (data.error || 'Успешно загружено ' + Object.keys(data).length + ' таблиц'));
+            } catch (error) {
+                log('Ошибка загрузки данных: ' + error.message);
+            }
+        }
+
+        async function testTableData() {
+            try {
+                const response = await fetch('/admin/api/data/house_types');
+                const data = await response.json();
+                log('Загрузка данных таблицы house_types: ' + (data.error || 'Успешно загружено ' + data.length + ' записей'));
+            } catch (error) {
+                log('Ошибка загрузки данных таблицы: ' + error.message);
+            }
+        }
+    </script>
+</body>
+</html> 

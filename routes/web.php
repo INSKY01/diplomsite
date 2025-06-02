@@ -3,16 +3,8 @@
 use Illuminate\Support\Facades\Route;
 use App\Http\Controllers\FeedbackController;
 use App\Http\Controllers\AdminController;
-use App\Http\Controllers\FloorController;
-use App\Http\Controllers\RoofController;
-use App\Http\Controllers\MaterialController;
-use App\Http\Controllers\FoundationController;
-use App\Http\Controllers\FacadeController;
-use App\Http\Controllers\ElectricalController;
-use App\Http\Controllers\WallFinishController;
-use App\Http\Controllers\AdditionController;
 use App\Http\Controllers\CalculatorDataController;
-use Illuminate\Support\Facades\DB;
+use App\Http\Controllers\CalculatorRequestController;
 
 Route::get('/', function () {
     return view('index');
@@ -43,7 +35,7 @@ Route::post('/admin/login', [AdminController::class, 'login'])->name('admin.logi
 Route::get('/admin/check-auth', [AdminController::class, 'checkAuth'])->name('admin.check-auth');
 Route::post('/admin/logout', [AdminController::class, 'logout'])->name('admin.logout');
 
-// Новые API маршруты для админ-панели
+// API маршруты для админ-панели
 Route::prefix('admin/api')->group(function () {
     Route::get('/data', [AdminController::class, 'getAllData'])->name('admin.data');
     Route::get('/data/{table}', [AdminController::class, 'getTableData'])->name('admin.table-data');
@@ -68,99 +60,5 @@ Route::prefix('api/calculator')->group(function () {
     Route::get('/additions', [CalculatorDataController::class, 'getAdditions'])->name('calculator.additions');
 });
 
-// Старые роуты для совместимости
-Route::prefix('admin')->group(function () {
-    Route::get('/types', [AdminController::class, 'getAllData'])->name('admin.types.index');
-});
-
-// Ресурсные маршруты для категорий
-Route::resource('floors', FloorController::class);
-Route::resource('roofs', RoofController::class);
-Route::resource('materials', MaterialController::class);
-Route::resource('foundations', FoundationController::class);
-Route::resource('facades', FacadeController::class);
-Route::resource('electrical', ElectricalController::class);
-Route::resource('wall-finishes', WallFinishController::class);
-Route::resource('additions', AdditionController::class);
-
-// Тестовый маршрут для создания записей в таблице electrical
-Route::get('/test-create-electrical', function() {
-    $record1 = App\Models\Electrical::create([
-        'name' => 'Базовая электрика',
-        'description' => 'Минимальный набор розеток и выключателей',
-        'price' => 50000,
-        'sockets' => 10,
-        'switches' => 8,
-        'lights' => 12,
-        'image' => '/img/electrical/basic.jpg'
-    ]);
-    
-    $record2 = App\Models\Electrical::create([
-        'name' => 'Стандарт',
-        'description' => 'Стандартный набор розеток и выключателей',
-        'price' => 80000,
-        'sockets' => 20,
-        'switches' => 15,
-        'lights' => 20,
-        'image' => '/img/electrical/standard.jpg'
-    ]);
-    
-    return [
-        'status' => 'success',
-        'message' => 'Electrical records created',
-        'records' => [
-            $record1,
-            $record2
-        ]
-    ];
-});
-
-// Тестовый маршрут для создания записей в таблице electrical
-Route::get('/test-create-electrical-direct', function() {
-    // Используем прямой запрос к базе данных
-    $record1 = DB::table('electrical')->insertGetId([
-        'name' => 'Базовая электрика',
-        'description' => 'Минимальный набор розеток и выключателей',
-        'price' => 50000,
-        'sockets' => 10,
-        'switches' => 8,
-        'lights' => 12,
-        'image' => '/img/electrical/basic.jpg',
-        'created_at' => now(),
-        'updated_at' => now()
-    ]);
-    
-    $record2 = DB::table('electrical')->insertGetId([
-        'name' => 'Стандарт',
-        'description' => 'Стандартный набор розеток и выключателей',
-        'price' => 80000,
-        'sockets' => 20,
-        'switches' => 15,
-        'lights' => 20,
-        'image' => '/img/electrical/standard.jpg',
-        'created_at' => now(),
-        'updated_at' => now()
-    ]);
-    
-    $record3 = DB::table('electrical')->insertGetId([
-        'name' => 'Премиум',
-        'description' => 'Расширенный набор розеток и выключателей с умными системами',
-        'price' => 120000,
-        'sockets' => 30,
-        'switches' => 25,
-        'lights' => 35,
-        'image' => '/img/electrical/premium.jpg',
-        'created_at' => now(),
-        'updated_at' => now()
-    ]);
-    
-    return [
-        'status' => 'success',
-        'message' => 'Electrical records created directly',
-        'records' => [
-            $record1,
-            $record2,
-            $record3
-        ]
-    ];
-});
+// Маршрут для отправки заявок калькулятора
+Route::post('/api/calculator/submit-request', [CalculatorRequestController::class, 'submitRequest'])->name('calculator.submit-request');

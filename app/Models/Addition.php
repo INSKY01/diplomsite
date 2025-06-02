@@ -11,6 +11,7 @@ class Addition extends Model
         'price',
         'description',
         'image',
-        'category'
+        'category',
+        'perMeter'
     ];
 } 

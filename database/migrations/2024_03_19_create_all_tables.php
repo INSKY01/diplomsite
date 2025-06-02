@@ -8,6 +8,18 @@ return new class extends Migration
 {
     public function up()
     {
+        // Таблица типов домов
+        if (!Schema::hasTable('house_types')) {
+            Schema::create('house_types', function (Blueprint $table) {
+                $table->id();
+                $table->string('name');
+                $table->decimal('price', 10, 2);
+                $table->text('description')->nullable();
+                $table->string('image')->nullable();
+                $table->timestamps();
+            });
+        }
+
         // Таблица этажей
         if (!Schema::hasTable('floors')) {
             Schema::create('floors', function (Blueprint $table) {
@@ -108,6 +120,7 @@ return new class extends Migration
 
     public function down()
     {
+        Schema::dropIfExists('house_types');
         Schema::dropIfExists('floors');
         Schema::dropIfExists('roofs');
         Schema::dropIfExists('materials');

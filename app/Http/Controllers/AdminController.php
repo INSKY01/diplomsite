@@ -14,15 +14,19 @@ class AdminController extends Controller
      */
     public function login(Request $request)
     {
-        $password = $request->input('password');
-        $correctPassword = env('ADMIN_PASSWORD', 'Respons1');
-        
-        if ($password === $correctPassword) {
-            Session::put('admin_authenticated', true);
-            return response()->json(['success' => true]);
+        try {
+            $password = $request->input('password');
+            $correctPassword = env('ADMIN_PASSWORD', 'Respons1');
+            
+            if ($password === $correctPassword) {
+                Session::put('admin_authenticated', true);
+                return response()->json(['success' => true]);
+            }
+            
+            return response()->json(['success' => false, 'message' => 'Неверный пароль'], 401);
+        } catch (\Exception $e) {
+            return response()->json(['success' => false, 'message' => 'Ошибка аутентификации'], 500);
         }
-        
-        return response()->json(['success' => false, 'message' => 'Неверный пароль'], 401);
     }
     
     /**
@@ -30,8 +34,12 @@ class AdminController extends Controller
      */
     public function checkAuth()
     {
-        $authenticated = Session::get('admin_authenticated', false);
-        return response()->json(['authenticated' => $authenticated]);
+        try {
+            $authenticated = Session::get('admin_authenticated', false);
+            return response()->json(['authenticated' => $authenticated]);
+        } catch (\Exception $e) {
+            return response()->json(['authenticated' => false]);
+        }
     }
     
     /**
@@ -39,8 +47,12 @@ class AdminController extends Controller
      */
     public function logout()
     {
-        Session::forget('admin_authenticated');
-        return response()->json(['success' => true]);
+        try {
+            Session::forget('admin_authenticated');
+            return response()->json(['success' => true]);
+        } catch (\Exception $e) {
+            return response()->json(['success' => false, 'message' => 'Ошибка выхода'], 500);
+        }
     }
 
     /**
@@ -60,7 +72,7 @@ class AdminController extends Controller
                 'materials' => DB::table('materials')->get(),
                 'foundations' => DB::table('foundations')->get(),
                 'facades' => DB::table('facades')->get(),
-                'electrical' => DB::table('electrical')->get(),
+                'electrical' => DB::table('electricals')->get(),
                 'wallFinishes' => DB::table('wall_finishes')->get(),
                 'additions' => DB::table('additions')->get(),
             ];
@@ -80,7 +92,7 @@ class AdminController extends Controller
             return response()->json(['error' => 'Unauthorized'], 401);
         }
 
-        $allowedTables = ['house_types', 'floors', 'roofs', 'materials', 'foundations', 'facades', 'electrical', 'wall_finishes', 'additions'];
+        $allowedTables = ['house_types', 'floors', 'roofs', 'materials', 'foundations', 'facades', 'electricals', 'wall_finishes', 'additions'];
         
         if (!in_array($table, $allowedTables)) {
             return response()->json(['error' => 'Недопустимая таблица'], 400);
@@ -103,7 +115,7 @@ class AdminController extends Controller
             return response()->json(['error' => 'Unauthorized'], 401);
         }
 
-        $allowedTables = ['house_types', 'floors', 'roofs', 'materials', 'foundations', 'facades', 'electrical', 'wall_finishes', 'additions'];
+        $allowedTables = ['house_types', 'floors', 'roofs', 'materials', 'foundations', 'facades', 'electricals', 'wall_finishes', 'additions'];
         
         if (!in_array($table, $allowedTables)) {
             return response()->json(['error' => 'Недопустимая таблица'], 400);
@@ -138,7 +150,7 @@ class AdminController extends Controller
             return response()->json(['error' => 'Unauthorized'], 401);
         }
 
-        $allowedTables = ['house_types', 'floors', 'roofs', 'materials', 'foundations', 'facades', 'electrical', 'wall_finishes', 'additions'];
+        $allowedTables = ['house_types', 'floors', 'roofs', 'materials', 'foundations', 'facades', 'electricals', 'wall_finishes', 'additions'];
         
         if (!in_array($table, $allowedTables)) {
             return response()->json(['error' => 'Недопустимая таблица'], 400);
@@ -171,7 +183,7 @@ class AdminController extends Controller
             return response()->json(['error' => 'Unauthorized'], 401);
         }
 
-        $allowedTables = ['house_types', 'floors', 'roofs', 'materials', 'foundations', 'facades', 'electrical', 'wall_finishes', 'additions'];
+        $allowedTables = ['house_types', 'floors', 'roofs', 'materials', 'foundations', 'facades', 'electricals', 'wall_finishes', 'additions'];
         
         if (!in_array($table, $allowedTables)) {
             return response()->json(['error' => 'Недопустимая таблица'], 400);

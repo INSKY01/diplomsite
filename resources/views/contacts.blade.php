@@ -3,10 +3,29 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <meta name="csrf-token" content="{{ csrf_token() }}">
     <title>Контакты</title>
     <link rel="stylesheet" href="css/reset.css">
     <link rel="stylesheet" href="css/normilize.css">
     <link rel="stylesheet" href="css/style.css">
+    <style>
+        .alert {
+            padding: 10px 15px;
+            margin: 10px 0;
+            border-radius: 5px;
+            font-weight: bold;
+        }
+        .alert-success {
+            background-color: #d4edda;
+            color: #155724;
+            border: 1px solid #c3e6cb;
+        }
+        .alert-error {
+            background-color: #f8d7da;
+            color: #721c24;
+            border: 1px solid #f5c6cb;
+        }
+    </style>
     <script defer src="js/script.js"></script>
     <link rel="shortcut icon" href="icons/logo.svg">
     <link rel="preconnect" href="https://fonts.googleapis.com">
@@ -61,26 +80,48 @@
         <div class="feedback">
             <p class="feedback__title">ОБРАТНАЯ СВЯЗЬ</p>
             <p class="feedback__text">ДОСТУПНО 24 ЧАСА</p>
-            <form id="contactForm" onsubmit="saveData(event)" class="feedback__form">
+            
+            @if(session('success'))
+                <div class="alert alert-success">
+                    {{ session('success') }}
+                </div>
+            @endif
+            
+            @if(session('error'))
+                <div class="alert alert-error">
+                    {{ session('error') }}
+                </div>
+            @endif
+            
+            @if($errors->any())
+                <div class="alert alert-error">
+                    @foreach($errors->all() as $error)
+                        <p>{{ $error }}</p>
+                    @endforeach
+                </div>
+            @endif
+            
+            <form action="{{ route('send.feedback') }}" method="POST" class="feedback__form">
+                @csrf
                 <div class="col-25">
                     <label class="label-name" for="firstname">Имя:</label>
                 </div>
                 <div>
-                    <input class="feedback__input" type="text" id="firstname" name="firstname" placeholder="Введите Ваше имя" required>
+                    <input class="feedback__input" type="text" id="firstname" name="firstname" placeholder="Введите Ваше имя" value="{{ old('firstname') }}" required>
                 </div>
     
                 <div class="col-25">
                     <label class="label-name" for="tel">Телефон:</label>
                 </div>
                 <div>
-                    <input class="feedback__input" type="tel" id="tel" name="tel" placeholder="Введите Ваш телефон" required>
+                    <input class="feedback__input" type="tel" id="tel" name="tel" placeholder="Введите Ваш телефон" value="{{ old('tel') }}" required>
                 </div>
     
                 <div class="col-25">
                     <label class="label-name" for="email">Почта:</label>
                 </div>
                 <div>
-                    <input class="feedback__input" type="email" id="email" name="email" placeholder="Введите Вашу эл. почту" required>
+                    <input class="feedback__input" type="email" id="email" name="email" placeholder="Введите Вашу эл. почту" value="{{ old('email') }}" required>
                 </div>
     
                 <div class="col-25">
@@ -88,7 +129,7 @@
                 </div>
     
                 <div>
-                    <textarea class="feedback__big-msg" id="subject" name="subject" placeholder="Введите Ваше сообщение"></textarea>
+                    <textarea class="feedback__big-msg" id="subject" name="subject" placeholder="Введите Ваше сообщение">{{ old('subject') }}</textarea>
                 </div>
                 <input class="feedback__button" type="submit" value="Отправить">
             </form>

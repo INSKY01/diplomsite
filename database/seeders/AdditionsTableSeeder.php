@@ -19,7 +19,7 @@ class AdditionsTableSeeder extends Seeder
                 'price' => 180000,
                 'perMeter' => false,
                 'category' => 'design',
-                'image' => 'https://images.unsplash.com/photo-1600596542815-ffad4c1539a9?w=400&h=300&fit=crop&crop=center',
+                'image' => '/img/calculator/additions/terrace.jpg',
                 'created_at' => now(),
                 'updated_at' => now()
             ],
@@ -29,7 +29,7 @@ class AdditionsTableSeeder extends Seeder
                 'price' => 250000,
                 'perMeter' => false,
                 'category' => 'comfort',
-                'image' => 'https://images.unsplash.com/photo-1600047509807-ba8f99d2cdde?w=400&h=300&fit=crop&crop=center',
+                'image' => '/img/calculator/additions/veranda.jpg',
                 'created_at' => now(),
                 'updated_at' => now()
             ],
@@ -39,7 +39,7 @@ class AdditionsTableSeeder extends Seeder
                 'price' => 320000,
                 'perMeter' => false,
                 'category' => 'comfort',
-                'image' => 'https://images.unsplash.com/photo-1600585154340-be6161a56a0c?w=400&h=300&fit=crop&crop=center',
+                'image' => '/img/calculator/additions/fireplace.png',
                 'created_at' => now(),
                 'updated_at' => now()
             ],
@@ -49,27 +49,7 @@ class AdditionsTableSeeder extends Seeder
                 'price' => 450000,
                 'perMeter' => false,
                 'category' => 'utility',
-                'image' => 'https://images.unsplash.com/photo-1558618047-fd6c13a75116?w=400&h=300&fit=crop&crop=center',
-                'created_at' => now(),
-                'updated_at' => now()
-            ],
-            [
-                'name' => 'Система умный дом',
-                'description' => 'Автоматизация освещения, отопления и безопасности',
-                'price' => 280000,
-                'perMeter' => false,
-                'category' => 'utility',
-                'image' => 'https://images.unsplash.com/photo-1563453392212-326f5e854473?w=400&h=300&fit=crop&crop=center',
-                'created_at' => now(),
-                'updated_at' => now()
-            ],
-            [
-                'name' => 'Система безопасности',
-                'description' => 'Видеонаблюдение и охранная сигнализация',
-                'price' => 150000,
-                'perMeter' => false,
-                'category' => 'safety',
-                'image' => 'https://images.unsplash.com/photo-1558618047-fd6c13a75116?w=400&h=300&fit=crop&crop=center',
+                'image' => '/img/calculator/additions/garage.jpg',
                 'created_at' => now(),
                 'updated_at' => now()
             ],
@@ -79,7 +59,7 @@ class AdditionsTableSeeder extends Seeder
                 'price' => 0,
                 'perMeter' => false,
                 'category' => 'design',
-                'image' => 'https://images.unsplash.com/photo-1558618666-fcd25c85cd64?w=400&h=300&fit=crop&crop=center',
+                'image' => '/img/calculator/additions/other.svg',
                 'created_at' => now(),
                 'updated_at' => now()
             ]

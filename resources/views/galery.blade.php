@@ -157,7 +157,7 @@
         </button>
         <div class="modal" id="myModal" onclick="closeModal()">
             <div class="modal-content">
-                <img alt="Enlarged view" id="modalImage" src=""/>
+                <img alt="Увеличенное изображение" id="modalImage" src="img/image_placeholder.png" style="display: none;"/>
             </div>
         </div>
         </div>
@@ -184,17 +184,17 @@
 
         <div class="footer-info__elements">
             <h2 class="footer-info__title">О НАС</h2>
-                <a href="" class="footer-info__text-1">Дома из бруса</a>
-                <a href="" class="footer-info__text-1">Каркасные дома</a>
-                <a href="" class="footer-info__text-1">Дачные бытовки</a>
+                <a href="{{ url('/') }}" class="footer-info__text-1">Дома из бруса</a>
+                <a href="{{ url('/') }}" class="footer-info__text-1">Каркасные дома</a>
+                <a href="{{ url('/') }}" class="footer-info__text-1">Дачные бытовки</a>
         </div>
 
         <div class="footer-info__elements">
             <h2 class="footer-info__title">УСЛУГИ</h2>
-                <a href="#" class="footer-info__text-1">Ремонт квартир</a>
-                <a href="#" class="footer-info__text-1">Монтаж Сайдинга</a>
-                <a href="#" class="footer-info__text-1">Кровельные работы</a>
-                <a href="#" class="footer-info__text-1">Реконструкция домов</a>
+                <a href="{{ url('/contacts') }}" class="footer-info__text-1">Ремонт квартир</a>
+                <a href="{{ url('/contacts') }}" class="footer-info__text-1">Монтаж Сайдинга</a>
+                <a href="{{ url('/contacts') }}" class="footer-info__text-1">Кровельные работы</a>
+                <a href="{{ url('/contacts') }}" class="footer-info__text-1">Реконструкция домов</a>
         </div>
     </div>
 </footer>

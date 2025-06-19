@@ -528,7 +528,7 @@ function renderHouseTypes() {
         return `
             <div class="option-card ${isSelected ? 'selected' : ''}${fullWidthClass}" onclick="selectHouseType(${house.id})" data-name="${house.name}">
                 <div class="option-image">
-                    <img src="${house.image}" alt="${house.name}">
+                    <img src="${house.image || '/img/calculator/house_types/frame_house.webp'}" alt="${house.name}">
                 </div>
                 <div class="option-details">
                     <h3>${house.name}</h3>
@@ -624,7 +624,7 @@ function renderFloors() {
         
         card.innerHTML = `
             <div class="option-image">
-                <img src="${floor.image}" alt="${floor.name}">
+                <img src="${floor.image || '/img/calculator/floors/one_floor.jpg'}" alt="${floor.name}">
             </div>
             <div class="option-details">
                 <h3>${floor.name}</h3>
@@ -664,7 +664,7 @@ function renderRoofs() {
         return `
             <div class="option-card ${isSelected ? 'selected' : ''}${fullWidthClass}" onclick="selectRoof(${roof.id})" data-name="${roof.name}">
                 <div class="option-image">
-                    <img src="${roof.image || 'img/image_placeholder.png'}" alt="${roof.name}">
+                    <img src="${roof.image || '/img/calculator/roofs/metal_tile.webp'}" alt="${roof.name}">
                 </div>
                 <div class="option-details">
                     <h3>${roof.name}</h3>
@@ -703,7 +703,7 @@ function renderMaterials() {
         return `
             <div class="option-card ${isSelected ? 'selected' : ''}${fullWidthClass}" onclick="selectMaterial(${material.id})" data-name="${material.name}">
                 <div class="option-image">
-                    <img src="${material.image || 'img/image_placeholder.png'}" alt="${material.name}">
+                    <img src="${material.image || '/img/calculator/materials/frame_osb.webp'}" alt="${material.name}">
                 </div>
                 <div class="option-details">
                     <h3>${material.name}</h3>
@@ -745,9 +745,9 @@ function renderFoundations() {
         return `
             <div class="option-card ${isSelected ? 'selected' : ''}${fullWidthClass}" onclick="selectFoundation(${foundation.id})" data-name="${foundation.name}">
                 <div class="option-image">
-                    <img src="${foundation.image || 'img/image_placeholder.png'}" 
+                    <img src="${foundation.image || '/img/calculator/foundations/screw_pile.jpg'}" 
                          alt="${foundation.name}"
-                         onerror="this.src='img/image_placeholder.png'">
+                         onerror="this.src='/img/calculator/foundations/screw_pile.jpg'">
                 </div>
                 <div class="option-details">
                     <h3>${foundation.name}</h3>
@@ -787,7 +787,7 @@ function renderFacades() {
         return `
             <div class="option-card ${isSelected ? 'selected' : ''}${fullWidthClass}" onclick="selectFacade(${facade.id})" data-name="${facade.name}">
                 <div class="option-image">
-                    <img src="${facade.image || 'img/image_placeholder.png'}" alt="${facade.name}">
+                    <img src="${facade.image || '/img/calculator/facades/vinyl_siding.webp'}" alt="${facade.name}">
                 </div>
                 <div class="option-details">
                     <h3>${facade.name}</h3>
@@ -833,14 +833,14 @@ function renderElectrical() {
         const fullWidthClass = isOther && (uniqueElectricalOptions.length > 4) ? ' full-width' : '';
         
         // Проверяем и формируем путь к изображению
-        const imagePath = item.image || '/img/electrical/basic.jpg';
+        const imagePath = item.image || '/img/calculator/electrical/basic.jpg';
         
         return `
             <div class="option-card ${isSelected ? 'selected' : ''}${fullWidthClass}" onclick="selectElectrical(${item.id})" data-name="${item.name}">
                 <div class="option-image">
                     <img src="${imagePath}" 
                          alt="${item.name}" 
-                         onerror="this.src='/img/electrical/basic.jpg'; this.onerror=null;">
+                         onerror="this.src='/img/calculator/electrical/basic.jpg'; this.onerror=null;">
                 </div>
                 <div class="option-details">
                     <h3>${item.name}</h3>
@@ -886,7 +886,7 @@ function renderWallFinishes() {
         return `
             <div class="option-card ${isSelected ? 'selected' : ''}${fullWidthClass}" onclick="selectWallFinish(${finish.id})" data-name="${finish.name}">
                 <div class="option-image">
-                    <img src="${finish.image || 'img/image_placeholder.png'}" alt="${finish.name}">
+                    <img src="${finish.image || '/img/calculator/wall_finishes/paint.jpg'}" alt="${finish.name}">
                 </div>
                 <div class="option-details">
                     <h3>${finish.name}</h3>
@@ -926,7 +926,7 @@ function renderAdditions() {
         return `
             <div class="option-card ${isSelected ? 'selected' : ''}${fullWidthClass}" onclick="toggleAddition(${addition.id})" data-name="${addition.name}">
                 <div class="option-image">
-                    <img src="${addition.image || 'img/image_placeholder.png'}" alt="${addition.name}">
+                    <img src="${addition.image || '/img/calculator/additions/terrace.jpg'}" alt="${addition.name}">
                 </div>
                 <div class="option-details">
                     <h3>${addition.name}</h3>

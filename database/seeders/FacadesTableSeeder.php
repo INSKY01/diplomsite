@@ -17,7 +17,7 @@ class FacadesTableSeeder extends Seeder
                 'name' => 'Виниловый сайдинг',
                 'description' => 'Практичная и доступная облицовка',
                 'price' => 2500,
-                'image' => 'https://images.unsplash.com/photo-1600585154340-be6161a56a0c?w=400&h=300&fit=crop&crop=center',
+                'image' => '/img/calculator/facades/vinyl_siding.webp',
                 'created_at' => now(),
                 'updated_at' => now()
             ],
@@ -25,7 +25,7 @@ class FacadesTableSeeder extends Seeder
                 'name' => 'Имитация бруса',
                 'description' => 'Деревянная отделка под натуральный брус',
                 'price' => 3500,
-                'image' => 'https://images.unsplash.com/photo-1600047509807-ba8f99d2cdde?w=400&h=300&fit=crop&crop=center',
+                'image' => '/img/calculator/facades/timber_imitation.webp',
                 'created_at' => now(),
                 'updated_at' => now()
             ],
@@ -33,7 +33,7 @@ class FacadesTableSeeder extends Seeder
                 'name' => 'Фиброцементные панели',
                 'description' => 'Современный долговечный материал',
                 'price' => 4500,
-                'image' => 'https://images.unsplash.com/photo-1449824913935-59a10b8d2000?w=400&h=300&fit=crop&crop=center',
+                'image' => '/img/calculator/facades/fiber_cement.webp',
                 'created_at' => now(),
                 'updated_at' => now()
             ],
@@ -41,7 +41,7 @@ class FacadesTableSeeder extends Seeder
                 'name' => 'Клинкерная плитка',
                 'description' => 'Премиальная отделка с неповторимым стилем',
                 'price' => 6500,
-                'image' => 'https://images.unsplash.com/photo-1558618666-fcd25c85cd64?w=400&h=300&fit=crop&crop=center',
+                'image' => '/img/calculator/facades/clinker_tile.webp',
                 'created_at' => now(),
                 'updated_at' => now()
             ],
@@ -49,7 +49,7 @@ class FacadesTableSeeder extends Seeder
                 'name' => 'Другое',
                 'description' => 'Индивидуальное фасадное решение',
                 'price' => 0,
-                'image' => 'https://images.unsplash.com/photo-1449824913935-59a10b8d2000?w=400&h=300&fit=crop&crop=center',
+                'image' => '/img/calculator/facades/other.svg',
                 'created_at' => now(),
                 'updated_at' => now()
             ]

@@ -1,6 +1,6 @@
 <?php
 
-// Скрипт для обновления путей к реальным изображениям в базе данных
+// Скрипт для обновления изображений в базе данных калькулятора
 require_once 'vendor/autoload.php';
 
 $app = require_once 'bootstrap/app.php';
@@ -9,116 +9,84 @@ $kernel->bootstrap();
 
 use Illuminate\Support\Facades\DB;
 
-echo "Обновление путей к реальным изображениям...\n\n";
+echo "Обновление изображений в базе данных на реальные изображения из папки calculator...\n\n";
 
-// Функция для поиска реального файла изображения
-function findRealImage($basePath, $fileName) {
-    $extensions = ['jpg', 'jpeg', 'png', 'webp'];
-    
-    foreach ($extensions as $ext) {
-        $fullPath = "public/img/calculator/{$basePath}/{$fileName}.{$ext}";
-        if (file_exists($fullPath)) {
-            return "/img/calculator/{$basePath}/{$fileName}.{$ext}";
-        }
-    }
-    
-    // Если реальное изображение не найдено, возвращаем SVG заглушку
-    return "/img/calculator/{$basePath}/{$fileName}.svg";
-}
-
-// Определяем пути к изображениям
-$imageMapping = [
+// Структура изображений (реальные изображения из папки calculator)
+$images = [
     'house_types' => [
-        'Каркасный дом' => 'frame_house',
-        'Дом из бруса' => 'timber_house',
-        'Кирпичный дом' => 'brick_house',
-        'Дом из газобетона' => 'aerated_concrete_house',
+        'Каркасный дом' => '/img/calculator/house_types/frame_house.webp',
+        'Дом из бруса' => '/img/calculator/house_types/timber_house.webp',
+        'Кирпичный дом' => '/img/calculator/house_types/brick_house.webp',
+        'Дом из газобетона' => '/img/calculator/house_types/aerated_concrete_house.jpg',
+        'Другое' => '/img/calculator/materials/other.svg',
     ],
     'floors' => [
-        '1 этаж' => 'one_floor',
-        '2 этажа' => 'two_floors',
-        '2 этажа + мансарда' => 'two_floors_attic',
-        'Другое' => 'other',
+        '1 этаж' => '/img/calculator/floors/one_floor.jpg',
+        '2 этажа' => '/img/calculator/floors/two_floors.jpg',
+        '2 этажа + мансарда' => '/img/calculator/floors/two_floors_attic.jpg',
+        'Другое' => '/img/calculator/floors/other.svg',
     ],
     'roofs' => [
-        'Металлочерепица' => 'metal_tile',
-        'Мягкая кровля' => 'soft_roof',
-        'Профнастил' => 'corrugated_metal',
-        'Керамическая черепица' => 'ceramic_tile',
-        'Другое' => 'other',
+        'Металлочерепица' => '/img/calculator/roofs/metal_tile.webp',
+        'Мягкая кровля' => '/img/calculator/roofs/soft_roof.webp',
+        'Профнастил' => '/img/calculator/roofs/corrugated_metal.jpg',
+        'Керамическая черепица' => '/img/calculator/roofs/ceramic_tile.webp',
+        'Другое' => '/img/calculator/roofs/other.svg',
     ],
     'materials' => [
-        'Каркас + OSB плиты' => 'frame_osb',
-        'Профилированный брус 150x150' => 'profiled_timber',
-        'Керамический кирпич' => 'ceramic_brick',
-        'Газобетонные блоки D400' => 'aerated_concrete',
-        'Другое' => 'other',
+        'Каркас + OSB плиты' => '/img/calculator/materials/frame_osb.webp',
+        'Профилированный брус 150x150' => '/img/calculator/materials/profiled_timber.webp',
+        'Керамический кирпич' => '/img/calculator/materials/ceramic_brick.webp',
+        'Газобетонные блоки D400' => '/img/calculator/materials/aerated_concrete.webp',
+        'Другое' => '/img/calculator/materials/other.svg',
     ],
     'foundations' => [
-        'Свайно-винтовой' => 'screw_pile',
-        'Ленточный мелкозаглубленный' => 'shallow_strip',
-        'Ленточный заглубленный' => 'deep_strip',
-        'Монолитная плита' => 'concrete_slab',
-        'Другое' => 'other',
+        'Свайно-винтовой' => '/img/calculator/foundations/screw_pile.jpg',
+        'Ленточный мелкозаглубленный' => '/img/calculator/foundations/shallow_strip.jpg',
+        'Ленточный заглубленный' => '/img/calculator/foundations/deep_strip.jpg',
+        'Монолитная плита' => '/img/calculator/foundations/concrete_slab.jpeg',
+        'Другое' => '/img/calculator/foundations/other.svg',
     ],
     'facades' => [
-        'Виниловый сайдинг' => 'vinyl_siding',
-        'Имитация бруса' => 'timber_imitation',
-        'Фиброцементные панели' => 'fiber_cement',
-        'Клинкерная плитка' => 'clinker_tile',
-        'Другое' => 'other',
+        'Виниловый сайдинг' => '/img/calculator/facades/vinyl_siding.webp',
+        'Имитация бруса' => '/img/calculator/facades/timber_imitation.webp',
+        'Фиброцементные панели' => '/img/calculator/facades/fiber_cement.webp',
+        'Клинкерная плитка' => '/img/calculator/facades/clinker_tile.webp',
+        'Другое' => '/img/calculator/facades/other.svg',
     ],
     'electricals' => [
-        'Базовая проводка' => 'basic',
-        'Улучшенная проводка' => 'improved',
-        'Премиум проводка' => 'premium',
-        'Другое' => 'other',
+        'Базовая проводка' => '/img/calculator/electrical/basic.jpg',
+        'Улучшенная проводка' => '/img/calculator/electrical/improved.jpg',
+        'Премиум проводка' => '/img/calculator/electrical/premium.jpg',
+        'Другое' => '/img/calculator/electrical/other.svg',
     ],
     'wall_finishes' => [
-        'Покраска стен' => 'paint',
-        'Обои' => 'wallpaper',
-        'Декоративная штукатурка' => 'decorative_plaster',
-        'Деревянные панели' => 'wood_panels',
-        'Другое' => 'other',
+        'Покраска стен' => '/img/calculator/wall_finishes/paint.jpg',
+        'Обои' => '/img/calculator/wall_finishes/wallpaper.webp',
+        'Декоративная штукатурка' => '/img/calculator/wall_finishes/decorative_plaster.jpg',
+        'Деревянные панели' => '/img/calculator/wall_finishes/wood_panels.jpg',
+        'Другое' => '/img/calculator/wall_finishes/other.svg',
     ],
     'additions' => [
-        'Терраса' => 'terrace',
-        'Веранда' => 'veranda',
-        'Камин' => 'fireplace',
-        'Гараж' => 'garage',
-        'Другое' => 'other',
+        'Терраса' => '/img/calculator/additions/terrace.jpg',
+        'Веранда' => '/img/calculator/additions/veranda.jpg',
+        'Камин' => '/img/calculator/additions/fireplace.png',
+        'Гараж' => '/img/calculator/additions/garage.jpg',
+        'Другое' => '/img/calculator/additions/other.svg',
     ],
 ];
 
-$totalUpdated = 0;
-$foundImages = 0;
-
 // Обновляем изображения в базе данных
-foreach ($imageMapping as $table => $items) {
+foreach ($images as $table => $tableImages) {
     echo "Обновление таблицы: $table\n";
     
-    foreach ($items as $name => $fileName) {
-        // Определяем путь к папке (учитываем особенность названия таблицы electrical)
-        $folderName = $table === 'electricals' ? 'electrical' : $table;
-        
-        // Ищем реальное изображение
-        $imagePath = findRealImage($folderName, $fileName);
-        
-        // Проверяем, найдено ли реальное изображение
-        $isRealImage = !str_ends_with($imagePath, '.svg');
-        
+    foreach ($tableImages as $name => $imagePath) {
         $updated = DB::table($table)
             ->where('name', $name)
             ->update(['image' => $imagePath]);
             
         if ($updated) {
-            $totalUpdated++;
-            if ($isRealImage) {
-                $foundImages++;
-                echo "  ✓ $name -> $imagePath (РЕАЛЬНОЕ ИЗОБРАЖЕНИЕ)\n";
-            } else {
-                echo "  ○ $name -> $imagePath (SVG заглушка)\n";
-            }
+            echo "  ✓ $name -> $imagePath\n";
         } else {
             echo "  ✗ Не найден элемент: $name\n";
         }
@@ -126,25 +94,5 @@ foreach ($imageMapping as $table => $items) {
     echo "\n";
 }
 
-echo "==========================================\n";
-echo "Готово! Обновлено записей: $totalUpdated\n";
-echo "Найдено реальных изображений: $foundImages из " . array_sum(array_map('count', $imageMapping)) . "\n";
-echo "SVG заглушек: " . (array_sum(array_map('count', $imageMapping)) - $foundImages) . "\n\n";
-
-// Показываем статистику по папкам
-echo "Статистика по категориям:\n";
-foreach ($imageMapping as $table => $items) {
-    $folderName = $table === 'electricals' ? 'electrical' : $table;
-    $realCount = 0;
-    
-    foreach ($items as $name => $fileName) {
-        $imagePath = findRealImage($folderName, $fileName);
-        if (!str_ends_with($imagePath, '.svg')) {
-            $realCount++;
-        }
-    }
-    
-    echo "- " . ucfirst($folderName) . ": $realCount/" . count($items) . " реальных изображений\n";
-}
-
-echo "\nДля завершения работы замените оставшиеся SVG заглушки на реальные изображения.\n"; 
+echo "Готово! Изображения обновлены в базе данных.\n";
+echo "Теперь используются реальные изображения из папки calculator.\n\n"; 

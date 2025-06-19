@@ -16,7 +16,7 @@ class MaterialsTableSeeder extends Seeder
                 'name' => 'Каркас + OSB плиты',
                 'description' => 'Деревянный каркас с OSB обшивкой',
                 'price' => 8000,
-                'image' => 'https://images.unsplash.com/photo-1558618047-fd6c13a75116?w=400&h=300&fit=crop&crop=center',
+                'image' => '/img/calculator/materials/frame_osb.webp',
                 'created_at' => now(),
                 'updated_at' => now()
             ],
@@ -24,7 +24,7 @@ class MaterialsTableSeeder extends Seeder
                 'name' => 'Профилированный брус 150x150',
                 'description' => 'Сухой профилированный брус естественной влажности',
                 'price' => 12000,
-                'image' => 'https://images.unsplash.com/photo-1600047509807-ba8f99d2cdde?w=400&h=300&fit=crop&crop=center',
+                'image' => '/img/calculator/materials/profiled_timber.webp',
                 'created_at' => now(),
                 'updated_at' => now()
             ],
@@ -32,7 +32,7 @@ class MaterialsTableSeeder extends Seeder
                 'name' => 'Керамический кирпич',
                 'description' => 'Полнотелый керамический кирпич М150',
                 'price' => 15000,
-                'image' => 'https://images.unsplash.com/photo-1504307651254-35680f356dfd?w=400&h=300&fit=crop&crop=center',
+                'image' => '/img/calculator/materials/ceramic_brick.webp',
                 'created_at' => now(),
                 'updated_at' => now()
             ],
@@ -40,7 +40,7 @@ class MaterialsTableSeeder extends Seeder
                 'name' => 'Газобетонные блоки D400',
                 'description' => 'Автоклавный газобетон плотностью 400 кг/м³',
                 'price' => 10000,
-                'image' => 'https://images.unsplash.com/photo-1581094794329-c8112a89af12?w=400&h=300&fit=crop&crop=center',
+                'image' => '/img/calculator/materials/aerated_concrete.webp',
                 'created_at' => now(),
                 'updated_at' => now()
             ],
@@ -48,7 +48,7 @@ class MaterialsTableSeeder extends Seeder
                 'name' => 'Другое',
                 'description' => 'Альтернативные материалы по индивидуальному проекту',
                 'price' => 0,
-                'image' => 'https://images.unsplash.com/photo-1504307651254-35680f356dfd?w=400&h=300&fit=crop&crop=center',
+                'image' => '/img/calculator/materials/other.svg',
                 'created_at' => now(),
                 'updated_at' => now()
             ]

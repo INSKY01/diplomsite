@@ -16,7 +16,7 @@ class FoundationsTableSeeder extends Seeder
                 'name' => 'Свайно-винтовой',
                 'description' => 'Экономичный вариант для легких домов',
                 'price' => 3500,
-                'image' => 'https://images.unsplash.com/photo-1504307651254-35680f356dfd?w=400&h=300&fit=crop&crop=center',
+                'image' => '/img/calculator/foundations/screw_pile.jpg',
                 'created_at' => now(),
                 'updated_at' => now()
             ],
@@ -24,7 +24,7 @@ class FoundationsTableSeeder extends Seeder
                 'name' => 'Ленточный мелкозаглубленный',
                 'description' => 'Оптимальное решение для большинства грунтов',
                 'price' => 5500,
-                'image' => 'https://images.unsplash.com/photo-1581094794329-c8112a89af12?w=400&h=300&fit=crop&crop=center',
+                'image' => '/img/calculator/foundations/shallow_strip.jpg',
                 'created_at' => now(),
                 'updated_at' => now()
             ],
@@ -32,7 +32,7 @@ class FoundationsTableSeeder extends Seeder
                 'name' => 'Ленточный заглубленный',
                 'description' => 'Надежный фундамент для тяжелых конструкций',
                 'price' => 8500,
-                'image' => 'https://images.unsplash.com/photo-1598300042247-d088f8ab3a91?w=400&h=300&fit=crop&crop=center',
+                'image' => '/img/calculator/foundations/deep_strip.jpg',
                 'created_at' => now(),
                 'updated_at' => now()
             ],
@@ -40,7 +40,7 @@ class FoundationsTableSeeder extends Seeder
                 'name' => 'Монолитная плита',
                 'description' => 'Максимальная надежность для сложных грунтов',
                 'price' => 12000,
-                'image' => 'https://images.unsplash.com/photo-1590725175611-4579a24a683f?w=400&h=300&fit=crop&crop=center',
+                'image' => '/img/calculator/foundations/concrete_slab.jpeg',
                 'created_at' => now(),
                 'updated_at' => now()
             ],
@@ -48,7 +48,7 @@ class FoundationsTableSeeder extends Seeder
                 'name' => 'Другое',
                 'description' => 'Специальный тип фундамента под геологические условия',
                 'price' => 0,
-                'image' => 'https://images.unsplash.com/photo-1598300042247-d088f8ab3a91?w=400&h=300&fit=crop&crop=center',
+                'image' => '/img/calculator/foundations/other.svg',
                 'created_at' => now(),
                 'updated_at' => now()
             ]

@@ -64,7 +64,7 @@ function openModal(src) {
     if (modal && modalImg) {
         modal.style.display = "block";
         modalImg.src = src;
-        
+        modalImg.style.display = "block";
         
         modal.onclick = function(event) {
             if (event.target === modal) {
@@ -72,7 +72,6 @@ function openModal(src) {
             }
         };
 
-        
         document.addEventListener('keydown', function(event) {
             if (event.key === 'Escape') {
                 closeModal();
@@ -82,8 +81,12 @@ function openModal(src) {
 }
 function closeModal() {
     const modal = document.getElementById("myModal");
+    const modalImg = document.getElementById("modalImage");
     if (modal) {
         modal.style.display = "none";
+        if (modalImg) {
+            modalImg.style.display = "none";
+        }
     }
 }
 

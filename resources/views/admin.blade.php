@@ -330,6 +330,12 @@
                 <a href="#" class="nav-item active" data-section="dashboard">
                     <i class="fas fa-tachometer-alt"></i> Панель управления
                 </a>
+                <a href="#" class="nav-item" data-section="requests">
+                    <i class="fas fa-clipboard-list"></i> Заявки калькулятора
+                </a>
+                <a href="#" class="nav-item" data-section="feedback">
+                    <i class="fas fa-comments"></i> Обратная связь
+                </a>
                 <a href="#" class="nav-item" data-section="house_types">
                     <i class="fas fa-home"></i> Типы домов
                 </a>

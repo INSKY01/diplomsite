@@ -7,6 +7,35 @@ let pendingDeleteAction = null;
 
 // Конфигурация таблиц
 const tableConfig = {
+    requests: {
+        title: 'Заявки калькулятора',
+        fields: ['id', 'name', 'phone', 'email', 'area', 'total_price', 'status', 'created_at'],
+        labels: {
+            id: 'ID',
+            name: 'Имя',
+            phone: 'Телефон',
+            email: 'Email',
+            area: 'Площадь',
+            total_price: 'Стоимость',
+            status: 'Статус',
+            created_at: 'Дата'
+        },
+        readOnly: true,
+        statusField: 'status'
+    },
+    feedback: {
+        title: 'Обратная связь',
+        fields: ['id', 'firstname', 'tel', 'email', 'subject', 'created_at'],
+        labels: {
+            id: 'ID',
+            firstname: 'Имя',
+            tel: 'Телефон',
+            email: 'Email',
+            subject: 'Сообщение',
+            created_at: 'Дата'
+        },
+        readOnly: true
+    },
     house_types: {
         title: 'Типы домов',
         fields: ['name', 'description', 'price', 'image'],
@@ -262,31 +291,165 @@ function switchSection(section) {
 
 // Показать панель управления
 function showDashboard() {
-    const contentArea = document.getElementById('contentArea');
+    currentSection = 'dashboard';
+    document.getElementById('pageTitle').textContent = 'Панель управления';
     
-    contentArea.innerHTML = `
-        <div class="row">
-            <div class="col-md-12">
-                <h2>Добро пожаловать в админ-панель!</h2>
-                <p>Выберите раздел в боковом меню для управления данными.</p>
-        </div>
-        </div>
-        <div class="row mt-4">
-            ${Object.entries(tableConfig).map(([key, config]) => `
-                <div class="col-md-4 mb-3">
-            <div class="card">
-                        <div class="card-body">
-                            <h5 class="card-title">${config.title}</h5>
-                            <p class="card-text">Управление данными: ${config.title.toLowerCase()}</p>
-                            <button class="btn btn-primary" onclick="switchSection('${key}')">
-                                Перейти
-                        </button>
+    // Загружаем статистику
+    fetch('/admin/api/requests/stats')
+        .then(response => response.json())
+        .then(data => {
+            const contentArea = document.getElementById('contentArea');
+            contentArea.innerHTML = `
+                <div class="row">
+                    <div class="col-md-3 mb-4">
+                        <div class="card bg-primary text-white">
+                            <div class="card-body">
+                                <div class="d-flex justify-content-between">
+                                    <div>
+                                        <h4 class="card-title">${data.total_requests}</h4>
+                                        <p class="card-text">Всего заявок</p>
+                                    </div>
+                                    <div class="align-self-center">
+                                        <i class="fas fa-clipboard-list fa-2x"></i>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                    <div class="col-md-3 mb-4">
+                        <div class="card bg-warning text-white">
+                            <div class="card-body">
+                                <div class="d-flex justify-content-between">
+                                    <div>
+                                        <h4 class="card-title">${data.new_requests}</h4>
+                                        <p class="card-text">Новые заявки</p>
+                                    </div>
+                                    <div class="align-self-center">
+                                        <i class="fas fa-bell fa-2x"></i>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                    <div class="col-md-3 mb-4">
+                        <div class="card bg-info text-white">
+                            <div class="card-body">
+                                <div class="d-flex justify-content-between">
+                                    <div>
+                                        <h4 class="card-title">${data.in_progress_requests}</h4>
+                                        <p class="card-text">В работе</p>
+                                    </div>
+                                    <div class="align-self-center">
+                                        <i class="fas fa-cogs fa-2x"></i>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                    <div class="col-md-3 mb-4">
+                        <div class="card bg-success text-white">
+                            <div class="card-body">
+                                <div class="d-flex justify-content-between">
+                                    <div>
+                                        <h4 class="card-title">${data.total_feedback}</h4>
+                                        <p class="card-text">Обращений</p>
+                                    </div>
+                                    <div class="align-self-center">
+                                        <i class="fas fa-comments fa-2x"></i>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
                     </div>
                 </div>
-            </div>
-            `).join('')}
-        </div>
-    `;
+                
+                <div class="row">
+                    <div class="col-md-6 mb-4">
+                        <div class="card">
+                            <div class="card-header">
+                                <h5 class="card-title mb-0">
+                                    <i class="fas fa-clock"></i> Последние заявки
+                                </h5>
+                            </div>
+                            <div class="card-body">
+                                ${data.recent_requests.length > 0 ? `
+                                    <div class="table-responsive">
+                                        <table class="table table-sm">
+                                            <thead>
+                                                <tr>
+                                                    <th>Имя</th>
+                                                    <th>Телефон</th>
+                                                    <th>Стоимость</th>
+                                                    <th>Статус</th>
+                                                    <th>Дата</th>
+                                                </tr>
+                                            </thead>
+                                            <tbody>
+                                                ${data.recent_requests.map(request => `
+                                                    <tr>
+                                                        <td>${request.name}</td>
+                                                        <td>${request.phone}</td>
+                                                        <td>${new Intl.NumberFormat('ru-RU').format(request.total_price)} ₽</td>
+                                                        <td>
+                                                            <span class="badge bg-${getStatusColor(request.status)}">
+                                                                ${getStatusText(request.status)}
+                                                            </span>
+                                                        </td>
+                                                        <td>${new Date(request.created_at).toLocaleDateString('ru-RU')}</td>
+                                                    </tr>
+                                                `).join('')}
+                                            </tbody>
+                                        </table>
+                                    </div>
+                                ` : '<p class="text-muted">Нет заявок</p>'}
+                            </div>
+                        </div>
+                    </div>
+                    
+                    <div class="col-md-6 mb-4">
+                        <div class="card">
+                            <div class="card-header">
+                                <h5 class="card-title mb-0">
+                                    <i class="fas fa-comment"></i> Последние обращения
+                                </h5>
+                            </div>
+                            <div class="card-body">
+                                ${data.recent_feedback.length > 0 ? `
+                                    <div class="table-responsive">
+                                        <table class="table table-sm">
+                                            <thead>
+                                                <tr>
+                                                    <th>Имя</th>
+                                                    <th>Email</th>
+                                                    <th>Дата</th>
+                                                </tr>
+                                            </thead>
+                                            <tbody>
+                                                ${data.recent_feedback.map(feedback => `
+                                                    <tr>
+                                                        <td>${feedback.firstname}</td>
+                                                        <td>${feedback.email}</td>
+                                                        <td>${new Date(feedback.created_at).toLocaleDateString('ru-RU')}</td>
+                                                    </tr>
+                                                `).join('')}
+                                            </tbody>
+                                        </table>
+                                    </div>
+                                ` : '<p class="text-muted">Нет обращений</p>'}
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            `;
+        })
+        .catch(error => {
+            console.error('Ошибка загрузки статистики:', error);
+            document.getElementById('contentArea').innerHTML = `
+                <div class="alert alert-danger">
+                    <i class="fas fa-exclamation-triangle"></i> Ошибка загрузки статистики
+                </div>
+            `;
+        });
 }
 
 // Показать секцию с таблицей
@@ -298,30 +461,20 @@ function showTableSection(section) {
         <div class="data-table">
             <div class="table-header">
                 <h3>${config.title}</h3>
-                <button class="btn-add" onclick="addItem('${section}')">
+                ${!config.readOnly ? `<button class="btn-add" onclick="addItem('${section}')">
                     <i class="fas fa-plus"></i> Добавить
-                    </button>
-                </div>
+                </button>` : ''}
+            </div>
             <div class="table-responsive">
-                <table class="table table-striped">
+                <table class="table">
                     <thead>
                         <tr>
-                            <th>ID</th>
                             ${config.fields.map(field => `<th>${config.labels[field]}</th>`).join('')}
                             <th>Действия</th>
                         </tr>
                     </thead>
-                    <tbody id="tableBody">
-                        <tr>
-                            <td colspan="${config.fields.length + 2}" class="text-center">
-                                <i class="fas fa-spinner fa-spin"></i> Загрузка...
-                            </td>
-                        </tr>
-                    </tbody>
-                </table>
-            </div>
-            </div>
-        `;
+                    <tbody>
+    `;
     
     // Загружаем данные для таблицы
     loadTableData(section);
@@ -369,48 +522,92 @@ async function loadTableData(section) {
 
 // Отрисовка таблицы
 function renderTable(section, data) {
-    const tableBody = document.getElementById('tableBody');
     const config = tableConfig[section];
-    
-    if (!data || data.length === 0) {
-        tableBody.innerHTML = `
-            <tr>
-                <td colspan="${config.fields.length + 2}" class="text-center text-muted">
-                    Нет данных для отображения
-                </td>
-            </tr>
-        `;
-                return;
-            }
+    if (!config) return;
 
-    tableBody.innerHTML = data.map(item => `
-        <tr>
-            <td>${item.id}</td>
-            ${config.fields.map(field => {
-                let value = item[field] || '';
-                
-                // Специальная обработка для изображений
-                if (field === 'image' && value) {
-                    return `<td><img src="${value}" class="image-preview" alt="Изображение" onerror="this.style.display='none'"></td>`;
-                }
-                
-                // Обрезаем длинный текст
-                if (typeof value === 'string' && value.length > 50) {
-                    value = value.substring(0, 50) + '...';
-                }
-                
-                return `<td>${value}</td>`;
-            }).join('')}
-            <td>
+    const contentArea = document.getElementById('contentArea');
+    
+    let tableHtml = `
+        <div class="data-table">
+            <div class="table-header">
+                <h3>${config.title}</h3>
+                ${!config.readOnly ? `<button class="btn-add" onclick="addItem('${section}')">
+                    <i class="fas fa-plus"></i> Добавить
+                </button>` : ''}
+            </div>
+            <div class="table-responsive">
+                <table class="table">
+                    <thead>
+                        <tr>
+                            ${config.fields.map(field => `<th>${config.labels[field]}</th>`).join('')}
+                            <th>Действия</th>
+                        </tr>
+                    </thead>
+                    <tbody>
+    `;
+
+    data.forEach(item => {
+        tableHtml += '<tr>';
+        
+        config.fields.forEach(field => {
+            let value = item[field];
+            
+            // Специальная обработка для разных типов полей
+            if (field === 'created_at') {
+                value = new Date(value).toLocaleDateString('ru-RU');
+            } else if (field === 'total_price') {
+                value = new Intl.NumberFormat('ru-RU').format(value) + ' ₽';
+            } else if (field === 'area') {
+                value = value + ' м²';
+            } else if (field === 'status') {
+                value = `<span class="badge bg-${getStatusColor(value)}">${getStatusText(value)}</span>`;
+            } else if (field === 'subject' && value && value.length > 50) {
+                value = value.substring(0, 50) + '...';
+            }
+            
+            tableHtml += `<td>${value || '-'}</td>`;
+        });
+        
+        // Кнопки действий
+        tableHtml += '<td>';
+        
+        if (section === 'requests') {
+            tableHtml += `
+                <button class="btn-edit" onclick="showRequestDetails(${JSON.stringify(item).replace(/"/g, '&quot;')})">
+                    <i class="fas fa-eye"></i>
+                </button>
+            `;
+        } else if (section === 'feedback') {
+            tableHtml += `
+                <button class="btn-edit" onclick="showFeedbackDetails(${JSON.stringify(item).replace(/"/g, '&quot;')})">
+                    <i class="fas fa-eye"></i>
+                </button>
+            `;
+        } else {
+            tableHtml += `
                 <button class="btn-edit" onclick="editItem('${section}', ${item.id})">
                     <i class="fas fa-edit"></i>
-                        </button>
-                <button class="btn-delete" onclick="deleteItem('${section}', ${item.id})">
-                    <i class="fas fa-trash"></i>
-                        </button>
-            </td>
-        </tr>
-    `).join('');
+                </button>
+            `;
+        }
+        
+        tableHtml += `
+            <button class="btn-delete" onclick="deleteItem('${section}', ${item.id})">
+                <i class="fas fa-trash"></i>
+            </button>
+        </td>`;
+        
+        tableHtml += '</tr>';
+    });
+
+    tableHtml += `
+                    </tbody>
+                </table>
+            </div>
+        </div>
+    `;
+
+    contentArea.innerHTML = tableHtml;
 }
 
 // Добавить новый элемент
@@ -734,4 +931,149 @@ function getToastTitle(type) {
 function toggleSidebar() {
     const sidebar = document.querySelector('.sidebar');
     sidebar.classList.toggle('mobile-open');
+}
+
+// Вспомогательные функции для работы со статусами
+function getStatusText(status) {
+    const statuses = {
+        'new': 'Новая',
+        'in_progress': 'В работе',
+        'completed': 'Завершена',
+        'cancelled': 'Отменена'
+    };
+    return statuses[status] || status;
+}
+
+function getStatusColor(status) {
+    const colors = {
+        'new': 'primary',
+        'in_progress': 'warning',
+        'completed': 'success',
+        'cancelled': 'danger'
+    };
+    return colors[status] || 'secondary';
+}
+
+// Функция для обновления статуса заявки
+async function updateRequestStatus(requestId, newStatus) {
+    try {
+        const response = await fetch(`/admin/api/requests/${requestId}/status`, {
+            method: 'PUT',
+            headers: {
+                'Content-Type': 'application/json',
+                'Accept': 'application/json'
+            },
+            body: JSON.stringify({ status: newStatus })
+        });
+
+        const data = await response.json();
+        
+        if (data.success) {
+            showToast('Статус заявки успешно обновлен', 'success');
+            // Перезагружаем данные
+            if (currentSection === 'requests') {
+                loadTableData('requests');
+            } else if (currentSection === 'dashboard') {
+                showDashboard();
+            }
+        } else {
+            showToast('Ошибка обновления статуса: ' + data.message, 'error');
+        }
+    } catch (error) {
+        console.error('Ошибка обновления статуса:', error);
+        showToast('Произошла ошибка при обновлении статуса', 'error');
+    }
+}
+
+// Функция для отображения детальной информации о заявке
+function showRequestDetails(request) {
+    const modal = new bootstrap.Modal(document.getElementById('editModal'));
+    document.getElementById('modalTitle').textContent = 'Детали заявки';
+    
+    const formFields = document.getElementById('formFields');
+    formFields.innerHTML = `
+        <div class="row">
+            <div class="col-md-6">
+                <h6>Контактные данные</h6>
+                <p><strong>Имя:</strong> ${request.name}</p>
+                <p><strong>Телефон:</strong> ${request.phone}</p>
+                <p><strong>Email:</strong> ${request.email || 'Не указан'}</p>
+                <p><strong>Комментарий:</strong> ${request.comment || 'Не указан'}</p>
+            </div>
+            <div class="col-md-6">
+                <h6>Параметры дома</h6>
+                <p><strong>Площадь:</strong> ${request.area} м²</p>
+                <p><strong>Тип дома:</strong> ${request.house_type ? request.house_type.name : 'Не указан'}</p>
+                <p><strong>Этажность:</strong> ${request.floor ? request.floor.name : 'Не указан'}</p>
+                <p><strong>Материал:</strong> ${request.material ? request.material.name : 'Не указан'}</p>
+                <p><strong>Фундамент:</strong> ${request.foundation ? request.foundation.name : 'Не указан'}</p>
+                <p><strong>Крыша:</strong> ${request.roof ? request.roof.name : 'Не указан'}</p>
+                <p><strong>Фасад:</strong> ${request.facade ? request.facade.name : 'Не указан'}</p>
+                <p><strong>Электрика:</strong> ${request.electrical ? request.electrical.name : 'Не указан'}</p>
+                <p><strong>Отделка стен:</strong> ${request.wall_finish ? request.wall_finish.name : 'Не указан'}</p>
+                <p><strong>Дополнения:</strong> ${request.additions_names || 'Не выбраны'}</p>
+            </div>
+        </div>
+        <div class="row mt-3">
+            <div class="col-12">
+                <h6>Статус заявки</h6>
+                <select class="form-select" id="requestStatus">
+                    <option value="new" ${request.status === 'new' ? 'selected' : ''}>Новая</option>
+                    <option value="in_progress" ${request.status === 'in_progress' ? 'selected' : ''}>В работе</option>
+                    <option value="completed" ${request.status === 'completed' ? 'selected' : ''}>Завершена</option>
+                    <option value="cancelled" ${request.status === 'cancelled' ? 'selected' : ''}>Отменена</option>
+                </select>
+            </div>
+        </div>
+        <div class="row mt-3">
+            <div class="col-12">
+                <h6>Итоговая стоимость</h6>
+                <h4 class="text-success">${new Intl.NumberFormat('ru-RU').format(request.total_price)} ₽</h4>
+            </div>
+        </div>
+    `;
+    
+    // Настройка кнопки сохранения
+    const saveBtn = document.querySelector('#editModal .btn-success');
+    saveBtn.onclick = () => {
+        const newStatus = document.getElementById('requestStatus').value;
+        updateRequestStatus(request.id, newStatus);
+        modal.hide();
+    };
+    
+    modal.show();
+}
+
+// Функция для отображения детальной информации об обращении
+function showFeedbackDetails(feedback) {
+    const modal = new bootstrap.Modal(document.getElementById('editModal'));
+    document.getElementById('modalTitle').textContent = 'Детали обращения';
+    
+    const formFields = document.getElementById('formFields');
+    formFields.innerHTML = `
+        <div class="row">
+            <div class="col-md-6">
+                <h6>Контактные данные</h6>
+                <p><strong>Имя:</strong> ${feedback.firstname}</p>
+                <p><strong>Телефон:</strong> ${feedback.tel}</p>
+                <p><strong>Email:</strong> ${feedback.email}</p>
+            </div>
+            <div class="col-md-6">
+                <h6>Сообщение</h6>
+                <p>${feedback.subject || 'Сообщение не указано'}</p>
+            </div>
+        </div>
+        <div class="row mt-3">
+            <div class="col-12">
+                <h6>Дата обращения</h6>
+                <p>${new Date(feedback.created_at).toLocaleString('ru-RU')}</p>
+            </div>
+        </div>
+    `;
+    
+    // Скрываем кнопку сохранения для обращений
+    const saveBtn = document.querySelector('#editModal .btn-success');
+    saveBtn.style.display = 'none';
+    
+    modal.show();
 }

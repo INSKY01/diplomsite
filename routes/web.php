@@ -42,6 +42,10 @@ Route::prefix('admin/api')->group(function () {
     Route::post('/data/{table}', [AdminController::class, 'store'])->name('admin.store');
     Route::put('/data/{table}/{id}', [AdminController::class, 'update'])->name('admin.update');
     Route::delete('/data/{table}/{id}', [AdminController::class, 'destroy'])->name('admin.destroy');
+    
+    // Маршруты для работы с заявками
+    Route::get('/requests/stats', [AdminController::class, 'getRequestsStats'])->name('admin.requests.stats');
+    Route::put('/requests/{id}/status', [AdminController::class, 'updateRequestStatus'])->name('admin.requests.update-status');
 });
 
 Route::post('/send-feedback', [FeedbackController::class, 'sendFeedback'])->name('send.feedback');

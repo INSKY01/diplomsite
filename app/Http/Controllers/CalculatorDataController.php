@@ -39,6 +39,15 @@ class CalculatorDataController extends Controller
     }
 
     /**
+     * Получить материалы для конкретного типа дома
+     */
+    public function getMaterialsByHouseType($houseTypeId)
+    {
+        $houseType = HouseType::findOrFail($houseTypeId);
+        return response()->json($houseType->materials);
+    }
+
+    /**
      * Получить типы домов
      */
     public function getHouseTypes()

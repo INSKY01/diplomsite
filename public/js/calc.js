@@ -24,7 +24,7 @@ let selections = {
     }
 };
 
-function setDefaultValues() {
+async function setDefaultValues() {
     // Проверяем, что данные загружены
     if (!adminData) {
         console.log('adminData not loaded yet, skipping setDefaultValues');
@@ -36,6 +36,9 @@ function setDefaultValues() {
     // Устанавливаем дефолтные значения для селекторов
     if (adminData.houseTypes && adminData.houseTypes.length > 0) {
         selections.houseType = adminData.houseTypes[0].id;
+        
+        // Загружаем материалы для выбранного типа дома
+        await loadMaterialsByHouseType(selections.houseType);
     }
     if (adminData.floors && adminData.floors.length > 0) {
         selections.floor = adminData.floors[0].id;
@@ -63,7 +66,7 @@ function setDefaultValues() {
 }
 
 // Загрузка данных из API
-function loadAdminData() {
+async function loadAdminData() {
     fetch('/api/calculator/data')
         .then(response => {
             if (!response.ok) {
@@ -71,11 +74,11 @@ function loadAdminData() {
             }
             return response.json();
         })
-        .then(data => {
+        .then(async (data) => {
             adminData = data;
             
             // Устанавливаем дефолтные значения
-            setDefaultValues();
+            await setDefaultValues();
             
             // Вызов функции отладки
             debugCalculator();
@@ -84,7 +87,7 @@ function loadAdminData() {
             // Расчет стоимости после загрузки данных
             calculateTotal();
         })
-        .catch(error => {
+        .catch(async (error) => {
             console.error('Ошибка загрузки данных:', error);
             showNotification('Не удалось загрузить данные калькулятора. Попробуйте перезагрузить страницу.', 'error');
             
@@ -95,7 +98,7 @@ function loadAdminData() {
                     adminData = JSON.parse(savedData);
                     
                     // Устанавливаем дефолтные значения
-                    setDefaultValues();
+                    await setDefaultValues();
                     
                     debugCalculator();
                     renderCurrentStep();
@@ -993,7 +996,47 @@ function renderSummary() {
 }
 
 
+// Функция для загрузки материалов по типу дома
+async function loadMaterialsByHouseType(houseTypeId) {
+    try {
+        const response = await fetch(`/api/calculator/materials/by-house-type/${houseTypeId}`);
+        if (!response.ok) {
+            throw new Error('Network response was not ok');
+        }
+        const materials = await response.json();
+        console.log(`Loaded materials for house type ${houseTypeId}:`, materials);
+        
+        // Обновляем материалы в adminData
+        adminData.materials = materials;
+        
+        // Если текущий выбранный материал не совместим с новым типом дома, сбрасываем выбор
+        const currentMaterialId = selections.material;
+        const isCurrentMaterialValid = materials.some(material => material.id === currentMaterialId);
+        
+        if (!isCurrentMaterialValid && materials.length > 0) {
+            // Выбираем первый доступный материал
+            selections.material = materials[0].id;
+            console.log(`Changed material selection to ${materials[0].id} (${materials[0].name})`);
+        }
+        
+        // Если мы сейчас на шаге выбора материалов, обновляем отображение
+        if (currentStep === 5) { // Шаг выбора материалов
+            renderMaterials();
+        }
+        
+        // Пересчитываем общую стоимость
+        calculateTotal();
+        
+        return materials;
+    } catch (error) {
+        console.error('Ошибка загрузки материалов для типа дома:', error);
+        showNotification('Ошибка загрузки материалов', 'error');
+        return [];
+    }
+}
+
 function selectHouseType(id) {
+    const previousHouseType = selections.houseType;
     selections.houseType = id;
     
     // Обновляем классы выбора
@@ -1015,6 +1058,12 @@ function selectHouseType(id) {
             card.classList.remove('selected');
         }
     });
+    
+    // Если тип дома изменился, загружаем новые материалы
+    if (previousHouseType !== id) {
+        console.log(`House type changed from ${previousHouseType} to ${id}, loading new materials...`);
+        loadMaterialsByHouseType(id);
+    }
     
     updateTotalPrice();
     // Вызов функции отладки

@@ -56,6 +56,7 @@ Route::prefix('api/calculator')->group(function () {
     Route::get('/house-types', [CalculatorDataController::class, 'getHouseTypes'])->name('calculator.house-types');
     Route::get('/floors', [CalculatorDataController::class, 'getFloors'])->name('calculator.floors');
     Route::get('/roofs', [CalculatorDataController::class, 'getRoofs'])->name('calculator.roofs');
+    Route::get('/materials/by-house-type/{houseTypeId}', [CalculatorDataController::class, 'getMaterialsByHouseType'])->name('calculator.materials-by-house-type');
     Route::get('/materials', [CalculatorDataController::class, 'getMaterials'])->name('calculator.materials');
     Route::get('/foundations', [CalculatorDataController::class, 'getFoundations'])->name('calculator.foundations');
     Route::get('/facades', [CalculatorDataController::class, 'getFacades'])->name('calculator.facades');

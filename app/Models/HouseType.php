@@ -12,4 +12,12 @@ class HouseType extends Model
         'price',
         'image'
     ];
+
+    /**
+     * Материалы, совместимые с данным типом дома
+     */
+    public function materials()
+    {
+        return $this->belongsToMany(Material::class, 'house_type_material');
+    }
 } 

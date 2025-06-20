@@ -29,4 +29,12 @@ class Material extends Model
     protected $casts = [
         'price' => 'float',
     ];
+
+    /**
+     * Типы домов, совместимые с данным материалом
+     */
+    public function houseTypes()
+    {
+        return $this->belongsToMany(HouseType::class, 'house_type_material');
+    }
 } 

@@ -18,6 +18,7 @@ class HouseType extends Model
      */
     public function materials()
     {
-        return $this->belongsToMany(Material::class, 'house_type_material');
+        return $this->belongsToMany(Material::class, 'house_type_material')
+                    ->orderByRaw("CASE WHEN name = 'Другое' THEN 1 ELSE 0 END, id");
     }
 } 

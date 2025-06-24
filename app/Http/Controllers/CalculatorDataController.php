@@ -170,7 +170,7 @@ class CalculatorDataController extends Controller
      */
     public function getRoofs()
     {
-        return Roof::all();
+        return Roof::orderByRaw("CASE WHEN name = 'Другое' THEN 1 ELSE 0 END, id")->get();
     }
 
     /**
@@ -229,7 +229,7 @@ class CalculatorDataController extends Controller
      */
     public function getMaterials()
     {
-        return Material::all();
+        return Material::orderByRaw("CASE WHEN name = 'Другое' THEN 1 ELSE 0 END, id")->get();
     }
 
     /**
@@ -253,6 +253,14 @@ class CalculatorDataController extends Controller
         ]);
 
         $material = Material::create($validated);
+        
+        // Автоматически связываем новый материал с типом дома "Другое" (id=5)
+        // чтобы он отображался в калькуляторе
+        $otherHouseType = HouseType::where('name', 'Другое')->first();
+        if ($otherHouseType) {
+            $material->houseTypes()->attach($otherHouseType->id);
+        }
+        
         return response()->json($material, 201);
     }
 
@@ -288,7 +296,7 @@ class CalculatorDataController extends Controller
      */
     public function getFoundations()
     {
-        return Foundation::all();
+        return Foundation::orderByRaw("CASE WHEN name = 'Другое' THEN 1 ELSE 0 END, id")->get();
     }
 
     /**
@@ -347,7 +355,7 @@ class CalculatorDataController extends Controller
      */
     public function getFacades()
     {
-        return Facade::all();
+        return Facade::orderByRaw("CASE WHEN name = 'Другое' THEN 1 ELSE 0 END, id")->get();
     }
 
     /**
@@ -406,7 +414,7 @@ class CalculatorDataController extends Controller
      */
     public function getElectrical()
     {
-        return Electrical::all();
+        return Electrical::orderByRaw("CASE WHEN name = 'Другое' THEN 1 ELSE 0 END, id")->get();
     }
 
     /**
@@ -471,7 +479,7 @@ class CalculatorDataController extends Controller
      */
     public function getWallFinishes()
     {
-        return WallFinish::all();
+        return WallFinish::orderByRaw("CASE WHEN name = 'Другое' THEN 1 ELSE 0 END, id")->get();
     }
 
     /**
@@ -530,7 +538,7 @@ class CalculatorDataController extends Controller
      */
     public function getAdditions()
     {
-        return Addition::all();
+        return Addition::orderByRaw("CASE WHEN name = 'Другое' THEN 1 ELSE 0 END, id")->get();
     }
 
     /**

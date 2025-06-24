@@ -659,7 +659,14 @@ function renderRoofs() {
     // Добавляем класс для количества колонок
     container.className = 'options-container four-columns';
 
-    container.innerHTML = adminData.roofs.map((roof, index) => {
+    // Разделяем обычные крыши и "Другое"
+    const regularRoofs = adminData.roofs.filter(roof => roof.name !== 'Другое');
+    const otherRoofs = adminData.roofs.filter(roof => roof.name === 'Другое');
+    
+    // Рендерим сначала обычные крыши, затем "Другое"
+    const allRoofs = [...regularRoofs, ...otherRoofs];
+
+    container.innerHTML = allRoofs.map((roof, index) => {
         const isSelected = parseInt(selections.roof) === parseInt(roof.id);
         const isOther = roof.name === 'Другое';
         const fullWidthClass = isOther && (adminData.roofs.length > 4) ? ' full-width' : '';
@@ -698,7 +705,14 @@ function renderMaterials() {
     // Добавляем класс для количества колонок
     container.className = 'options-container four-columns';
 
-    container.innerHTML = adminData.materials.map((material, index) => {
+    // Разделяем обычные материалы и "Другое"
+    const regularMaterials = adminData.materials.filter(material => material.name !== 'Другое');
+    const otherMaterials = adminData.materials.filter(material => material.name === 'Другое');
+    
+    // Рендерим сначала обычные материалы, затем "Другое"
+    const allMaterials = [...regularMaterials, ...otherMaterials];
+
+    container.innerHTML = allMaterials.map((material, index) => {
         const isSelected = parseInt(selections.material) === parseInt(material.id);
         const isOther = material.name === 'Другое';
         const fullWidthClass = isOther && (adminData.materials.length > 4) ? ' full-width' : '';
@@ -740,7 +754,14 @@ function renderFoundations() {
     // Добавляем класс для количества колонок
     container.className = 'options-container four-columns';
 
-    const html = adminData.foundations.map((foundation, index) => {
+    // Разделяем обычные фундаменты и "Другое"
+    const regularFoundations = adminData.foundations.filter(foundation => foundation.name !== 'Другое');
+    const otherFoundations = adminData.foundations.filter(foundation => foundation.name === 'Другое');
+    
+    // Рендерим сначала обычные фундаменты, затем "Другое"
+    const allFoundations = [...regularFoundations, ...otherFoundations];
+
+    const html = allFoundations.map((foundation, index) => {
         const isSelected = parseInt(selections.foundation) === parseInt(foundation.id);
         const isOther = foundation.name === 'Другое';
         const fullWidthClass = isOther && (adminData.foundations.length > 4) ? ' full-width' : '';
@@ -782,7 +803,14 @@ function renderFacades() {
     // Добавляем класс для количества колонок
     container.className = 'options-container four-columns';
 
-    container.innerHTML = adminData.facades.map((facade, index) => {
+    // Разделяем обычные фасады и "Другое"
+    const regularFacades = adminData.facades.filter(facade => facade.name !== 'Другое');
+    const otherFacades = adminData.facades.filter(facade => facade.name === 'Другое');
+    
+    // Рендерим сначала обычные фасады, затем "Другое"
+    const allFacades = [...regularFacades, ...otherFacades];
+
+    container.innerHTML = allFacades.map((facade, index) => {
         const isSelected = parseInt(selections.facade) === parseInt(facade.id);
         const isOther = facade.name === 'Другое';
         const fullWidthClass = isOther && (adminData.facades.length > 4) ? ' full-width' : '';
@@ -826,10 +854,17 @@ function renderElectrical() {
         return true;
     });
 
+    // Разделяем обычную электрику и "Другое"
+    const regularElectrical = uniqueElectricalOptions.filter(item => item.name !== 'Другое');
+    const otherElectrical = uniqueElectricalOptions.filter(item => item.name === 'Другое');
+    
+    // Рендерим сначала обычную электрику, затем "Другое"
+    const allElectrical = [...regularElectrical, ...otherElectrical];
+
     // Добавляем класс для количества колонок
     container.className = 'options-container four-columns';
 
-    container.innerHTML = uniqueElectricalOptions.map((item, index) => {
+    container.innerHTML = allElectrical.map((item, index) => {
         const isSelected = parseInt(selections.electrical) === parseInt(item.id);
         const isOther = item.name === 'Другое';
         // "Другое" на полную ширину только если элементов больше 4
@@ -881,7 +916,14 @@ function renderWallFinishes() {
     // Добавляем класс для количества колонок
     container.className = 'options-container four-columns';
 
-    container.innerHTML = adminData.wallFinishes.map((finish, index) => {
+    // Разделяем обычные отделки и "Другое"
+    const regularFinishes = adminData.wallFinishes.filter(finish => finish.name !== 'Другое');
+    const otherFinishes = adminData.wallFinishes.filter(finish => finish.name === 'Другое');
+    
+    // Рендерим сначала обычные отделки, затем "Другое"
+    const allFinishes = [...regularFinishes, ...otherFinishes];
+
+    container.innerHTML = allFinishes.map((finish, index) => {
         const isSelected = parseInt(selections.wallFinish) === parseInt(finish.id);
         const isOther = finish.name === 'Другое';
         const fullWidthClass = isOther && (adminData.wallFinishes.length > 4) ? ' full-width' : '';
@@ -920,7 +962,14 @@ function renderAdditions() {
     // Добавляем класс для количества колонок
     container.className = 'options-container four-columns';
 
-    container.innerHTML = adminData.additions.map((addition, index) => {
+    // Разделяем обычные дополнения и "Другое"
+    const regularAdditions = adminData.additions.filter(addition => addition.name !== 'Другое');
+    const otherAdditions = adminData.additions.filter(addition => addition.name === 'Другое');
+    
+    // Рендерим сначала обычные дополнения, затем "Другое"
+    const allAdditions = [...regularAdditions, ...otherAdditions];
+
+    container.innerHTML = allAdditions.map((addition, index) => {
         const isSelected = selections.additions.includes(addition.id);
         const isOther = addition.name === 'Другое';
         // "Другое" должно быть на полную ширину если это последний элемент

@@ -522,11 +522,18 @@ function renderHouseTypes() {
     // Добавляем класс для количества колонок
     container.className = 'options-container four-columns';
 
-    container.innerHTML = adminData.houseTypes.map((house, index) => {
+    // Разделяем обычные типы домов и "Другое"
+    const regularHouseTypes = adminData.houseTypes.filter(house => house.name !== 'Другое');
+    const otherHouseTypes = adminData.houseTypes.filter(house => house.name === 'Другое');
+    
+    // Рендерим сначала обычные типы домов, затем "Другое"
+    const allHouseTypes = [...regularHouseTypes, ...otherHouseTypes];
+
+    container.innerHTML = allHouseTypes.map((house, index) => {
         const isSelected = parseInt(selections.houseType) === parseInt(house.id);
         const isOther = house.name === 'Другое';
         // "Другое" на полную ширину только если элементов больше 4
-        const fullWidthClass = isOther && (adminData.houseTypes.length > 4) ? ' full-width' : '';
+        const fullWidthClass = isOther && (allHouseTypes.length > 4) ? ' full-width' : '';
         
         return `
             <div class="option-card ${isSelected ? 'selected' : ''}${fullWidthClass}" onclick="selectHouseType(${house.id})" data-name="${house.name}">

@@ -44,7 +44,10 @@ class CalculatorDataController extends Controller
     public function getMaterialsByHouseType($houseTypeId)
     {
         $houseType = HouseType::findOrFail($houseTypeId);
-        return response()->json($houseType->materials);
+        $materials = $houseType->materials()
+                              ->orderByRaw("CASE WHEN name = 'Другое' THEN 1 ELSE 0 END, id")
+                              ->get();
+        return response()->json($materials);
     }
 
     /**
@@ -52,7 +55,7 @@ class CalculatorDataController extends Controller
      */
     public function getHouseTypes()
     {
-        return HouseType::all();
+        return HouseType::orderByRaw("CASE WHEN name = 'Другое' THEN 1 ELSE 0 END, id")->get();
     }
 
     /**

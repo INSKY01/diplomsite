@@ -105,25 +105,25 @@
                     <div class="calc_readress__steps_settings">
                         <div class="step-row" onclick="selectFoundation(this)">
                             <div>
-                                <img src="img/bg_base_1.png" alt="Монолитная плита">
+                                <img src="img/calculator/foundations/concrete_slab.jpeg" alt="Монолитная плита">
                                 <p>Монолитная плита</p>
                             </div>
                         </div>
                         <div class="step-row" onclick="selectFoundation(this)">
                             <div>
-                                <img src="img/bg_base_2.png" alt="Свайный">
+                                <img src="img/calculator/foundations/screw_pile.jpg" alt="Свайный">
                                 <p>Свайный</p>
                             </div>
                         </div>
                         <div class="step-row" onclick="selectFoundation(this)">
                             <div>
-                                <img src="img/bg_base_3.png" alt="Цокольный этаж">
+                                <img src="img/calculator/foundations/deep_strip.jpg" alt="Цокольный этаж">
                                 <p>Цокольный этаж</p>
                             </div>
                         </div>
                         <div class="step-row" onclick="selectFoundation(this)">
                             <div>
-                                <img src="img/bg_base_5.png" alt="Ленточный">
+                                <img src="img/calculator/foundations/shallow_strip.jpg" alt="Ленточный">
                                 <p>Ленточный</p>
                             </div>
                         </div>
